@@ -70,6 +70,7 @@ namespace GoogleARCore.Examples.AugmentedImage
     /// </summary>
     public void Update()
     {
+      Debug.Log("hello");
       /* 
       // Exit the app when the 'back' button is pressed.
       if (Input.GetKey(KeyCode.Escape))

@@ -28,7 +28,7 @@ public class ScanStart : MonoBehaviour
       FitToScanOverlay.SetActive(false);
       foreach (var image in m_TempAugmentedImages)
       {
-        Console.WriteLine("Wohoo we have a picture found!");
+        Debug.Log("Wohoo we have a picture found!");
         this.controller.StartPosition(image);
         this.DeactivateSelf();
         return;
