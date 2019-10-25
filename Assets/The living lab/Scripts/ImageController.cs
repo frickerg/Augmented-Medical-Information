@@ -61,8 +61,9 @@ public class ImageController : MonoBehaviour
         this.alreadySetAnchor = true;
 
         // create anchor
-        //this.anchor = Session.CreateAnchor(image.CenterPose);
-        this.anchor = image.CreateAnchor(image.CenterPose); // TODO adjust rotation
+         this.anchor = Session.CreateAnchor(image.CenterPose);
+        // this.anchor = image.CreateAnchor(image.CenterPose);
+        // TODO adjust rotation
 
         // make an object child of the anchor to see where it is
         // picture will move to where the anchor will move
@@ -73,8 +74,8 @@ public class ImageController : MonoBehaviour
             anchor.transform);
         */
 
-        lastAnchoredPosition = anchor.transform.position;
-        lastAnchoredRotation = anchor.transform.rotation;
+        this.lastAnchoredPosition = anchor.transform.position;
+        this.lastAnchoredRotation = anchor.transform.rotation;
     }
 
 
@@ -100,5 +101,4 @@ public class ImageController : MonoBehaviour
     {
         this.debuggerInfo.text = this.debuggerInfo.text + "\n" + text;
     }
-
 }
