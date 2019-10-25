@@ -13,7 +13,7 @@ public class ImageController : MonoBehaviour
     public Camera firstPersonCamera;
 
     private Anchor anchor;
-    public GameObject anchoredPicture;
+    public GameObject anchorDisplay;
 
     private bool alreadySetAnchor = false;
 
@@ -62,17 +62,13 @@ public class ImageController : MonoBehaviour
 
         // create anchor
          this.anchor = Session.CreateAnchor(image.CenterPose);
-        // this.anchor = image.CreateAnchor(image.CenterPose);
-        // TODO adjust rotation
 
         // make an object child of the anchor to see where it is
         // picture will move to where the anchor will move
-        /* only do this, when we want to create a new instance of the picture!
-            GameObject.Instantiate(anchoredPicture,
-            anchor.transform.position,
-            anchor.transform.rotation,
-            anchor.transform);
-        */
+        GameObject.Instantiate(anchorDisplay,
+        anchor.transform.position,
+        anchor.transform.rotation,
+        anchor.transform);
 
         this.lastAnchoredPosition = anchor.transform.position;
         this.lastAnchoredRotation = anchor.transform.rotation;
