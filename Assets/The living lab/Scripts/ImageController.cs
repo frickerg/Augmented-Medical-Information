@@ -31,6 +31,12 @@ public class ImageController : MonoBehaviour
     // text to show on the screen
     private string debugText;
 
+    // information points that show clinical stations
+    public GameObject informationPoints;
+
+    // TODO arrows are enabled by their own controller
+    public GameObject arrows;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -55,8 +61,9 @@ public class ImageController : MonoBehaviour
                 {
                     // we only set anchor, when a picture was found a picture to track
                     this.SetAnchor(image);
-                    FitToScanOverlay.SetActive(false);
                     this.alreadySetAnchor = true;
+                    FitToScanOverlay.SetActive(false);
+                    this.syncTheWorld();
                 }
 
             }
@@ -68,18 +75,11 @@ public class ImageController : MonoBehaviour
     public void SetAnchor(AugmentedImage image)
     {
         // create anchor where image was scanned
-         this.anchor = image.CreateAnchor(image.CenterPose);
-
-        // place image where the image was scanned
-        this.poster.transform.position = image.CenterPose.position;
-        this.poster.transform.Rotate(0, 90, 0);
-        //this.poster.transform.rotation = image.CenterPose.rotation;
-        this.poster.SetActive(true);
+        this.anchor = image.CreateAnchor(image.CenterPose);
+        this.Logger("Anchor set");
 
         this.lastAnchoredPosition = anchor.transform.position;
         this.lastAnchoredRotation = anchor.transform.rotation;
-
-        this.Logger("Anchor set");
     }
 
     // log how much the anchor moved from starting position
@@ -106,5 +106,19 @@ public class ImageController : MonoBehaviour
     public void Logger(string text)
     {
         this.debugText = this.debugText + "\n" + text;
+    }
+
+    private void syncTheWorld()
+    {
+        // place image where the image was scanned
+        // rest of the other world is also placed, because they are all children
+        this.poster.transform.position = anchor.transform.position;
+        this.poster.SetActive(true);
+
+        // show information points
+        this.informationPoints.SetActive(true);
+
+        // TODO remove show arrows
+        this.arrows.SetActive(true);
     }
 }
