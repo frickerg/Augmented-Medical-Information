@@ -29,7 +29,7 @@ public class ImageController : MonoBehaviour
     {
         FitToScanOverlay.SetActive(true);
         debuggerInfo = GameObject.Find("DebuggerConsole").GetComponentInChildren<Text>();
-        debuggerInfo.text = "";
+        debuggerInfo.text = "Test";
     }
 
     // Update is called once per frame
