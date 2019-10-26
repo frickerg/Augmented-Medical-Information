@@ -14,6 +14,8 @@ public class ImageController : MonoBehaviour
 
     private Anchor anchor;
     public GameObject anchorDisplay;
+    public GameObject poster;
+    public GameObject centerDisplay;
 
     private bool alreadySetAnchor = false;
 
@@ -22,56 +24,60 @@ public class ImageController : MonoBehaviour
 
     private Text debuggerInfo;
 
-    
+    private string debugText;
 
     // Start is called before the first frame update
     void Start()
     {
         FitToScanOverlay.SetActive(true);
-        debuggerInfo = GameObject.Find("DebuggerConsole").GetComponentInChildren<Text>();
-        debuggerInfo.text = "Test";
+        this.debuggerInfo = GameObject.Find("DebuggerConsole").GetComponentInChildren<Text>();
+        this.Logger("test");
     }
 
     // Update is called once per frame
     void Update()
-    {   
+    {
         if (!this.alreadySetAnchor)
         {
-            // Get updated augmented images for this frame.
+            // gett all pictures from camera
             Session.GetTrackables<AugmentedImage>(
                 m_TempAugmentedImages, TrackableQueryFilter.Updated);
 
             foreach (var image in m_TempAugmentedImages)
             {
-                // move camera in front of picture
-                //this.firstPersonCamera.transform.position = image.CenterPose.position;
-                //this.firstPersonCamera.transform.rotation = new Quaternion(0, 270f, 0, 0); // TODO don't know if this is the way
+                if (image.TrackingState == TrackingState.Tracking)
+                {
+                    // we only set anchor, when a picture was found a picture to track
+                    this.SetAnchor(image);
+                    FitToScanOverlay.SetActive(false);
+                    this.alreadySetAnchor = true;
+                }
 
-                this.SetAnchor(image);
-                this.alreadySetAnchor = true;
-                FitToScanOverlay.SetActive(false);
-                break;
             }
         }
-        //this.CheckAnchorDrift();
+        
+        this.CheckAnchorDrift();
+        this.debuggerInfo.text = this.debugText;
     }
 
     public void SetAnchor(AugmentedImage image)
     {
-        this.alreadySetAnchor = true;
+        // create anchor where image was scanned
+         this.anchor = image.CreateAnchor(image.CenterPose);
 
-        // create anchor
-         this.anchor = Session.CreateAnchor(image.CenterPose);
+        // place image where the image was scanned
+        this.poster.transform.position = image.CenterPose.position;
+        this.poster.transform.Rotate(0, 90, 0);
+        //this.poster.transform.rotation = image.CenterPose.rotation;
+        this.poster.SetActive(true);
 
-        // make an object child of the anchor to see where it is
-        // picture will move to where the anchor will move
-        GameObject.Instantiate(anchorDisplay,
-        anchor.transform.position,
-        anchor.transform.rotation,
-        anchor.transform);
+        // display center so we see were we are
+        this.centerDisplay.SetActive(true);
 
         this.lastAnchoredPosition = anchor.transform.position;
         this.lastAnchoredRotation = anchor.transform.rotation;
+
+        this.Logger("Anchor set");
     }
 
 
@@ -82,19 +88,20 @@ public class ImageController : MonoBehaviour
 
         if (lastAnchoredPosition != anchor.transform.position)
         {
-            Log("Distance Changed: " + Vector3.Distance(anchor.transform.position, lastAnchoredPosition));
+            this.Logger("Distance Changed: " + Vector3.Distance(anchor.transform.position, lastAnchoredPosition));
             lastAnchoredPosition = anchor.transform.position;
         }
 
         if (lastAnchoredRotation != anchor.transform.rotation)
         {
-            Log("Rotation Changed: " + Quaternion.Angle(anchor.transform.rotation, lastAnchoredRotation));
+            this.Logger("Rotation Changed: " + Quaternion.Angle(anchor.transform.rotation, lastAnchoredRotation));
             lastAnchoredRotation = anchor.transform.rotation;
         }
     }
 
-    public void Log(string text)
+    // Adds text to the debug view on the screen
+    public void Logger(string text)
     {
-        this.debuggerInfo.text = this.debuggerInfo.text + "\n" + text;
+        this.debugText = this.debugText + "\n" + text;
     }
 }
