@@ -6,29 +6,35 @@ using UnityEngine.UI;
 
 public class ImageController : MonoBehaviour
 {
+    // the overlay to say user to scann the picture
     public GameObject FitToScanOverlay;
 
+    // temporarily stored pictures to find poster
     private List<AugmentedImage> m_TempAugmentedImages = new List<AugmentedImage>();
-
-    public Camera firstPersonCamera;
-
+    
+    // holds anchor of scanned poster
     private Anchor anchor;
-    public GameObject anchorDisplay;
+    
+    // poster in the virtual world
     public GameObject poster;
-    public GameObject centerDisplay;
 
+    // true when anchor of poster was set
     private bool alreadySetAnchor = false;
 
+    // holds last stored position and rotation of anchor
     private Vector3 lastAnchoredPosition;
     private Quaternion lastAnchoredRotation;
 
+    // text element to show text on screen
     private Text debuggerInfo;
 
+    // text to show on the screen
     private string debugText;
 
     // Start is called before the first frame update
     void Start()
     {
+        // TODO exchange to our own overlay
         FitToScanOverlay.SetActive(true);
         this.debuggerInfo = GameObject.Find("DebuggerConsole").GetComponentInChildren<Text>();
         this.Logger("test");
@@ -39,7 +45,7 @@ public class ImageController : MonoBehaviour
     {
         if (!this.alreadySetAnchor)
         {
-            // gett all pictures from camera
+            // get all pictures from camera
             Session.GetTrackables<AugmentedImage>(
                 m_TempAugmentedImages, TrackableQueryFilter.Updated);
 
@@ -55,7 +61,6 @@ public class ImageController : MonoBehaviour
 
             }
         }
-        
         this.CheckAnchorDrift();
         this.debuggerInfo.text = this.debugText;
     }
@@ -71,16 +76,13 @@ public class ImageController : MonoBehaviour
         //this.poster.transform.rotation = image.CenterPose.rotation;
         this.poster.SetActive(true);
 
-        // display center so we see were we are
-        this.centerDisplay.SetActive(true);
-
         this.lastAnchoredPosition = anchor.transform.position;
         this.lastAnchoredRotation = anchor.transform.rotation;
 
         this.Logger("Anchor set");
     }
 
-
+    // log how much the anchor moved from starting position
     public void CheckAnchorDrift()
     {
         if (anchor == null)
@@ -100,6 +102,7 @@ public class ImageController : MonoBehaviour
     }
 
     // Adds text to the debug view on the screen
+    // TODO bring this to work...
     public void Logger(string text)
     {
         this.debugText = this.debugText + "\n" + text;
