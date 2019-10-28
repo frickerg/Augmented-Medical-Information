@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class ImageController : MonoBehaviour
 {
+    // holds camera
+    public Camera camera;
+
     // the overlay to say user to scann the picture
     public GameObject FitToScanOverlay;
 
@@ -17,6 +20,8 @@ public class ImageController : MonoBehaviour
     
     // poster in the virtual world
     public GameObject poster;
+
+    public GameObject anchorDisplay;
 
     // true when anchor of poster was set
     private bool alreadySetAnchor = false;
@@ -63,13 +68,12 @@ public class ImageController : MonoBehaviour
                     this.SetAnchor(image);
                     this.alreadySetAnchor = true;
                     FitToScanOverlay.SetActive(false);
-                    this.syncTheWorld();
                 }
 
             }
         }
-        this.CheckAnchorDrift();
-        this.debuggerInfo.text = this.debugText;
+        //this.CheckAnchorDrift();
+        //this.debuggerInfo.text = this.debugText;
     }
 
     public void SetAnchor(AugmentedImage image)
@@ -80,6 +84,7 @@ public class ImageController : MonoBehaviour
 
         this.lastAnchoredPosition = anchor.transform.position;
         this.lastAnchoredRotation = anchor.transform.rotation;
+        this.syncTheWorld();
     }
 
     // log how much the anchor moved from starting position
@@ -110,9 +115,15 @@ public class ImageController : MonoBehaviour
 
     private void syncTheWorld()
     {
+        GameObject.Instantiate(poster,
+            anchor.transform.position,
+            anchor.transform.rotation,
+            anchor.transform);
+
         // place image where the image was scanned
         // rest of the other world is also placed, because they are all children
-        this.poster.transform.position = anchor.transform.position;
+        this.poster.transform.LookAt(camera.transform);
+        this.poster.transform.Rotate(0, 180,0);
         this.poster.SetActive(true);
 
         // show information points
