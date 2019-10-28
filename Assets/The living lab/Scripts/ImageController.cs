@@ -36,15 +36,16 @@ public class ImageController : MonoBehaviour
     // text to show on the screen
     private string debugText;
 
-    // information points that show clinical stations
-    public GameObject informationPoints;
+    // holds all information points at stations
+    public List<GameObject> informationPoints;
 
-    // TODO arrows are enabled by their own controller
-    public GameObject arrows;
+    // holds all arrows
+    public List<GameObject> arrows;
 
     // Start is called before the first frame update
     void Start()
     {
+        this.SetupScene();
         // TODO exchange to our own overlay
         FitToScanOverlay.SetActive(true);
         this.debuggerInfo = GameObject.Find("DebuggerConsole").GetComponentInChildren<Text>();
@@ -131,6 +132,24 @@ public class ImageController : MonoBehaviour
         this.poster.SetActive(true);
 
         // show information points
-        this.informationPoints.SetActive(true);
+        this.SetActiveInfoPoints(true);
+    }
+
+    // set up the components right
+    private void SetupScene()
+    {
+        this.poster.SetActive(false);
+        foreach(var arrow in this.arrows) {
+            arrow.SetActive(false);
+        }
+        this.SetActiveInfoPoints(false);
+    }
+
+    private void SetActiveInfoPoints(bool isActive)
+    {
+        foreach(var point in this.informationPoints)
+        {
+            point.SetActive(isActive);
+        }
     }
 }
