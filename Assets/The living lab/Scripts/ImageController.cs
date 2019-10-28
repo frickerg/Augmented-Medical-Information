@@ -74,6 +74,9 @@ public class ImageController : MonoBehaviour
         }
         //this.CheckAnchorDrift();
         //this.debuggerInfo.text = this.debugText;
+
+        // set poster always to anchor
+        this.poster.transform.position = this.anchor.transform.position;
     }
 
     public void SetAnchor(AugmentedImage image)
@@ -115,15 +118,16 @@ public class ImageController : MonoBehaviour
 
     private void syncTheWorld()
     {
-        GameObject.Instantiate(poster,
+        GameObject.Instantiate(this.anchorDisplay,
             anchor.transform.position,
             anchor.transform.rotation,
             anchor.transform);
 
         // place image where the image was scanned
         // rest of the other world is also placed, because they are all children
-        this.poster.transform.LookAt(camera.transform);
-        this.poster.transform.Rotate(0, 180,0);
+        // TODO only works when started with camera facing the poster to scann
+        //this.poster.transform.LookAt(camera.transform);
+        //this.poster.transform.Rotate(0, 0,0);
         this.poster.SetActive(true);
 
         // show information points
