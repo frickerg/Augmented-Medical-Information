@@ -1,4 +1,6 @@
 # Augmented-Medical-Information
 
 Developers:
-Joshua Drewlow
+- Joshua Drewlow
+- Guillaume Fricker
+- Daniel Reichenpfader
