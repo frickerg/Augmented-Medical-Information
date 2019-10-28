@@ -4,7 +4,7 @@ using UnityEngine;
 using GoogleARCore;
 using UnityEngine.UI;
 
-public class ImageController : MonoBehaviour
+public class SceneController : MonoBehaviour
 {
     // the overlay to say user to scann the picture
     public GameObject FitToScanOverlay;
@@ -27,12 +27,6 @@ public class ImageController : MonoBehaviour
     private Vector3 lastAnchoredPosition;
     private Quaternion lastAnchoredRotation;
 
-    // text element to show text on screen
-    private Text debuggerInfo;
-
-    // text to show on the screen
-    private string debugText;
-
     // holds all information points at stations
     public List<GameObject> informationPoints;
 
@@ -45,8 +39,6 @@ public class ImageController : MonoBehaviour
         this.SetupScene();
         // TODO exchange to our own overlay
         FitToScanOverlay.SetActive(true);
-        this.debuggerInfo = GameObject.Find("DebuggerConsole").GetComponentInChildren<Text>();
-        this.Logger("test");
     }
 
     // Update is called once per frame
@@ -70,8 +62,7 @@ public class ImageController : MonoBehaviour
 
             }
         }
-        //this.CheckAnchorDrift();
-        //this.debuggerInfo.text = this.debugText;
+        this.LogAnchorDrift();
 
         // set poster always to anchor
         if (this.anchor != null)
@@ -80,45 +71,21 @@ public class ImageController : MonoBehaviour
         }
     }
 
+    // set the anchor to center of scanned image
     public void SetAnchor(AugmentedImage image)
     {
         // create anchor where image was scanned
         this.anchor = image.CreateAnchor(image.CenterPose);
-        this.Logger("Anchor set");
 
         this.lastAnchoredPosition = anchor.transform.position;
         this.lastAnchoredRotation = anchor.transform.rotation;
         this.syncTheWorld();
     }
 
-    // log how much the anchor moved from starting position
-    public void CheckAnchorDrift()
-    {
-        if (anchor == null)
-            return;
-
-        if (lastAnchoredPosition != anchor.transform.position)
-        {
-            this.Logger("Distance Changed: " + Vector3.Distance(anchor.transform.position, lastAnchoredPosition));
-            lastAnchoredPosition = anchor.transform.position;
-        }
-
-        if (lastAnchoredRotation != anchor.transform.rotation)
-        {
-            this.Logger("Rotation Changed: " + Quaternion.Angle(anchor.transform.rotation, lastAnchoredRotation));
-            lastAnchoredRotation = anchor.transform.rotation;
-        }
-    }
-
-    // Adds text to the debug view on the screen
-    // TODO bring this to work...
-    public void Logger(string text)
-    {
-        this.debugText = this.debugText + "\n" + text;
-    }
-
+    // position the rest of AMIs world according to picture
     private void syncTheWorld()
     {
+        // TODO add success message to screen when scan was successfull
         GameObject.Instantiate(this.anchorDisplay,
             anchor.transform.position,
             anchor.transform.rotation,
@@ -150,6 +117,25 @@ public class ImageController : MonoBehaviour
         foreach(var point in this.informationPoints)
         {
             point.SetActive(isActive);
+        }
+    }
+
+    // log how much the anchor moved from starting position
+    public void LogAnchorDrift()
+    {
+        if (anchor == null)
+            return;
+
+        if (lastAnchoredPosition != anchor.transform.position)
+        {
+            Debug.Log("Distance Changed: " + Vector3.Distance(anchor.transform.position, lastAnchoredPosition));
+            lastAnchoredPosition = anchor.transform.position;
+        }
+
+        if (lastAnchoredRotation != anchor.transform.rotation)
+        {
+            Debug.Log("Rotation Changed: " + Quaternion.Angle(anchor.transform.rotation, lastAnchoredRotation));
+            lastAnchoredRotation = anchor.transform.rotation;
         }
     }
 }
