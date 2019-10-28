@@ -6,9 +6,6 @@ using UnityEngine.UI;
 
 public class ImageController : MonoBehaviour
 {
-    // holds camera
-    public Camera camera;
-
     // the overlay to say user to scann the picture
     public GameObject FitToScanOverlay;
 
@@ -77,7 +74,10 @@ public class ImageController : MonoBehaviour
         //this.debuggerInfo.text = this.debugText;
 
         // set poster always to anchor
-        this.poster.transform.position = this.anchor.transform.position;
+        if (this.anchor != null)
+        {
+            this.poster.transform.position = this.anchor.transform.position;
+        }
     }
 
     public void SetAnchor(AugmentedImage image)
@@ -135,7 +135,7 @@ public class ImageController : MonoBehaviour
         this.SetActiveInfoPoints(true);
     }
 
-    // set up the components right
+    // hide all objects from scene
     private void SetupScene()
     {
         this.poster.SetActive(false);
