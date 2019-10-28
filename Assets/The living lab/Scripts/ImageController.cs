@@ -132,8 +132,5 @@ public class ImageController : MonoBehaviour
 
         // show information points
         this.informationPoints.SetActive(true);
-
-        // TODO remove show arrows
-        this.arrows.SetActive(true);
     }
 }
