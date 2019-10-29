@@ -54,6 +54,7 @@ public class SceneController : MonoBehaviour
             {
                 if (image.TrackingState == TrackingState.Tracking)
                 {
+                    Debug.Log("We found the picture");
                     // we only set anchor, when a picture was found a picture to track
                     this.SetAnchor(image);
                     this.alreadySetAnchor = true;
@@ -62,7 +63,7 @@ public class SceneController : MonoBehaviour
 
             }
         }
-        this.LogAnchorDrift();
+        //this.LogAnchorDrift();
 
         // set poster always to anchor
         if (this.anchor != null)
@@ -86,10 +87,6 @@ public class SceneController : MonoBehaviour
     private void syncTheWorld()
     {
         // TODO add success message to screen when scan was successfull
-        GameObject.Instantiate(this.anchorDisplay,
-            anchor.transform.position,
-            anchor.transform.rotation,
-            anchor.transform);
 
         // place image where the image was scanned
         // rest of the other world is also placed, because they are all children
@@ -105,11 +102,11 @@ public class SceneController : MonoBehaviour
     // hide all objects from scene
     private void SetupScene()
     {
-        this.poster.SetActive(false);
         foreach(var arrow in this.arrows) {
             arrow.SetActive(false);
         }
         this.SetActiveInfoPoints(false);
+        this.poster.SetActive(false);
     }
 
     private void SetActiveInfoPoints(bool isActive)
