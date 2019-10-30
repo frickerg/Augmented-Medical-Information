@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class WallController : MonoBehaviour
 {
-    // holds the invisible material
+    // holds invisible material
     public Material invisibleMat;
 
-    // set all walls to invisible material
+    // Set all walls to invisible material in beginning.
+    // all walls the should hide other objects behind should be children of WallController object.
     void Start()
     {
         // get all renderers in this object and its children:

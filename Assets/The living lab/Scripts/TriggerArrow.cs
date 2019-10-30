@@ -5,7 +5,7 @@ using GoogleARCore;
 
 public class TriggerArrow : MonoBehaviour
 {
-    // arrow that we want to enable
+    // arrows that we want to enable
     public List<GameObject> arrows;
 
     private void OnTriggerEnter(Collider collider)
