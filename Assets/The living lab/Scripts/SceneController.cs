@@ -4,6 +4,10 @@ using UnityEngine;
 using GoogleARCore;
 using UnityEngine.UI;
 
+/*
+ * Controlls AMIs world after onboarding was made.
+ * OnboardingController should activate this controller.
+ */
 public class SceneController : MonoBehaviour
 {
     // the overlay to say user to scann the picture
@@ -18,14 +22,8 @@ public class SceneController : MonoBehaviour
     // poster in the virtual world
     public GameObject poster;
 
-    public GameObject anchorDisplay;
-
     // true when anchor of poster was set
     private bool alreadySetAnchor = false;
-
-    // holds last stored position and rotation of anchor
-    private Vector3 lastAnchoredPosition;
-    private Quaternion lastAnchoredRotation;
 
     // holds all information points at stations
     public List<GameObject> informationPoints;
@@ -33,29 +31,39 @@ public class SceneController : MonoBehaviour
     // holds all arrows
     public List<GameObject> arrows;
 
-    // Start is called before the first frame update
+    // holds last stored position and rotation of anchor
+    private Vector3 lastAnchoredPosition;
+    private Quaternion lastAnchoredRotation;
+
+    // Start is called before the first frame update.
     void Start()
     {
+        //TODO start onboarding in other controller and then activate this controller
+
         this.SetupScene();
         // TODO exchange to our own overlay
         FitToScanOverlay.SetActive(true);
     }
 
-    // Update is called once per frame
+    // Update is called once per frame.
     void Update()
     {
         if (!this.alreadySetAnchor)
         {
-            // get all pictures from camera
+            // get all pictures from camera, normally 60 fps, TODO set this specificly
             Session.GetTrackables<AugmentedImage>(
                 m_TempAugmentedImages, TrackableQueryFilter.Updated);
 
+            // loop over pictures from camera
             foreach (var image in m_TempAugmentedImages)
             {
                 if (image.TrackingState == TrackingState.Tracking)
                 {
+                    // we found a picture that was in AugmentedImage database!
                     Debug.Log("We found the picture");
-                    // we only set anchor, when a picture was found a picture to track
+
+                    // set anchor to persist the picture points around this object
+                    // (other recognised picture points are thrown away to stay performant)
                     this.SetAnchor(image);
                     this.alreadySetAnchor = true;
                     FitToScanOverlay.SetActive(false);
@@ -65,7 +73,7 @@ public class SceneController : MonoBehaviour
         }
         //this.LogAnchorDrift();
 
-        // set poster always to anchor
+        // set poster always to anchor, because anchor can drifft, but can also be corrected
         if (this.anchor != null)
         {
             this.poster.transform.position = this.anchor.transform.position;
@@ -74,16 +82,20 @@ public class SceneController : MonoBehaviour
         }
     }
 
-    // set the anchor to center of scanned image
+    // Set anchor to center of scanned image.
     public void SetAnchor(AugmentedImage image)
     {
         // create anchor where image was scanned
         this.anchor = image.CreateAnchor(image.CenterPose);
 
+        // TODO add success message to screen when scan was successfull
+
+        // keep the last position and rotation
         this.lastAnchoredPosition = anchor.transform.position;
         this.lastAnchoredRotation = anchor.transform.rotation;
 
         // align the rest of AMIs world according to poster
+
         this.syncTheWorld(image);
     }
 
@@ -102,7 +114,8 @@ public class SceneController : MonoBehaviour
         this.SetActiveInfoPoints(true);
     }
 
-    // hide all objects from scene
+    // Hide all objects from scene.
+    // should be called at startup
     private void SetupScene()
     {
         foreach(var arrow in this.arrows) {
@@ -112,6 +125,7 @@ public class SceneController : MonoBehaviour
         this.poster.SetActive(false);
     }
 
+    // Activate/Deactivate all Infopoints.
     private void SetActiveInfoPoints(bool isActive)
     {
         foreach(var point in this.informationPoints)
@@ -120,7 +134,7 @@ public class SceneController : MonoBehaviour
         }
     }
 
-    // log how much the anchor moved from starting position
+    // Log how much the anchor driffted from starting position.
     public void LogAnchorDrift()
     {
         if (anchor == null)
