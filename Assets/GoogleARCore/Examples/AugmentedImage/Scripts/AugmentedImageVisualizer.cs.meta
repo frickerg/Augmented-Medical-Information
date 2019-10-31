@@ -1,13 +1,11 @@
 fileFormatVersion: 2
 guid: 655793353707240a195aee929b80d41a
+timeCreated: 1521058274
+licenseType: Pro
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences:
-  - FrameLowerLeft: {fileID: 100002, guid: 74aca5660a7fd4b9eb3611a73c368d15, type: 3}
-  - FrameLowerRight: {fileID: 100002, guid: 1824455c8ec9e45ceb5a919fe307ab24, type: 3}
-  - FrameUpperLeft: {fileID: 100002, guid: 6666c2b1b39a3466c96b2a4be1428ced, type: 3}
-  - FrameUpperRight: {fileID: 100002, guid: 72a7c3ddfe10740bba966d9a6f05202b, type: 3}
+  defaultReferences: []
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
