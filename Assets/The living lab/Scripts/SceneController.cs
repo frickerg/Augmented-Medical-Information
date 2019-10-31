@@ -77,6 +77,8 @@ public class SceneController : MonoBehaviour
         if (this.anchor != null)
         {
             this.poster.transform.position = this.anchor.transform.position;
+            // TODO, do we have to adjust anchor as well?
+            // maybe same procedure with turning 90 degrees from anchor rotation?
         }
     }
 
@@ -93,20 +95,19 @@ public class SceneController : MonoBehaviour
         this.lastAnchoredRotation = anchor.transform.rotation;
 
         // align the rest of AMIs world according to poster
-        this.syncTheWorld();
+
+        this.syncTheWorld(image);
     }
 
     // Position AMIs world according to poster.
-    private void syncTheWorld()
+    private void syncTheWorld(AugmentedImage scannedImage)
     {
-        // place image where the image was scanned
-        // rest of the other world is also placed, because they are all children
-        // TODO only works when started with camera facing the poster to scann
-        //this.poster.transform.LookAt(camera.transform);
-        //this.poster.transform.Rotate(0, 0,0);
+        // we rotate AMIs world with 90 degrees "backwards", so it is flat at the wall
+        // side rotation we don't rotate so the poster has always same rotation
+        Quaternion imageRotation = scannedImage.CenterPose.rotation;
+        this.poster.transform.rotation = imageRotation;
+        this.poster.transform.Rotate(90, 0, 0);
 
-        // TODO improve this, this works only when phone is held 90 degrees 
-        // to poster and phone parrallel to the floor
         this.poster.SetActive(true);
 
         // show information points
