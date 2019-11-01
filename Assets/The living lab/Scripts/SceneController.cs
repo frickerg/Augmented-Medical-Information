@@ -108,6 +108,7 @@ public class SceneController : MonoBehaviour
         this.poster.transform.rotation = imageRotation;
         this.poster.transform.Rotate(90, 0, 0);
 
+        // all objects of AMIs world are children of poster
         this.poster.SetActive(true);
 
         // show information points
