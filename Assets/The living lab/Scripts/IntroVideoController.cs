@@ -32,13 +32,13 @@ public class IntroVideoController : MonoBehaviour
                 {
                     if (!videoPlayer.isPlaying)
                     {
-                        // play the video
+                        // play the video and show pause button
                         videoPlayer.Play();
                         playButton.SetActive(false);
                         pauseButton.SetActive(true);
                     } else
                     {
-                        // pause the video
+                        // pause the video and show play button
                         videoPlayer.Pause();
                         playButton.SetActive(true);
                         pauseButton.SetActive(false);
