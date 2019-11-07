@@ -35,6 +35,9 @@ public class SceneController : MonoBehaviour
     private Vector3 lastAnchoredPosition;
     private Quaternion lastAnchoredRotation;
 
+    // holds all objects of AMIs world, when anchored are set as children from poster to be aligned correctly
+    public GameObject AMIsObjects;
+
     // Start is called before the first frame update.
     void Start()
     {
@@ -112,6 +115,9 @@ public class SceneController : MonoBehaviour
         // all objects of AMIs world are children of poster
         this.poster.SetActive(true);
 
+        // show AMIs world
+        this.AMIsObjects.SetActive(true);
+
         // show information points
         this.SetActiveInfoPoints(true);
     }
@@ -125,6 +131,12 @@ public class SceneController : MonoBehaviour
         }
         this.SetActiveInfoPoints(false);
         this.poster.SetActive(false);
+        this.AMIsObjects.SetActive(false);
+
+        // set poster parent from other objects in AMIs world
+        this.AMIsObjects.transform.parent = this.poster.transform;
+        // TODO do we have to adjust something?
+        // TODO try disabling other walls to know whats wrong...
     }
 
     // Activate/Deactivate all Infopoints.
