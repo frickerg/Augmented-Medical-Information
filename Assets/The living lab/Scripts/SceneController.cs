@@ -73,13 +73,15 @@ public class SceneController : MonoBehaviour
         }
         //this.LogAnchorDrift();
 
-        // set poster always to anchor, because anchor can drifft, but can also be corrected
+        // set poster always to anchor, because anchor can drifft, but can also be corrected by arcore device
         if (this.anchor != null)
         {
             this.poster.transform.position = this.anchor.transform.position;
-            // TODO, do we have to adjust anchor as well?
-            // maybe same procedure with turning 90 degrees from anchor rotation?
+            // we don't want to touch rotation, otherwise it will turn around...
         }
+
+        // never let screen sleep
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
     }
 
     // Set anchor to center of scanned image.
@@ -95,7 +97,6 @@ public class SceneController : MonoBehaviour
         this.lastAnchoredRotation = anchor.transform.rotation;
 
         // align the rest of AMIs world according to poster
-
         this.syncTheWorld(image);
     }
 
