@@ -42,10 +42,13 @@ public class SceneController : MonoBehaviour
     void Start()
     {
         //TODO start onboarding in other controller and then activate this controller
-
-        this.SetupScene();
         // TODO exchange to our own overlay
         FitToScanOverlay.SetActive(true);
+    }
+
+    private void Awake()
+    {
+        this.SetupScene();
     }
 
     // Update is called once per frame.
@@ -129,14 +132,18 @@ public class SceneController : MonoBehaviour
         foreach(var arrow in this.arrows) {
             arrow.SetActive(false);
         }
-        this.SetActiveInfoPoints(false);
-        this.poster.SetActive(false);
-        this.AMIsObjects.SetActive(false);
+        // TODO enable again when it workst
+        //this.SetActiveInfoPoints(false);
+        //this.poster.SetActive(false);
+        //this.AMIsObjects.SetActive(false);
 
-        // set poster parent from other objects in AMIs world
-        this.AMIsObjects.transform.parent = this.poster.transform;
-        // TODO do we have to adjust something?
-        // TODO try disabling other walls to know whats wrong...
+        // children of AMIs world become child of poster so they follow anchor
+        Transform newParent = this.poster.transform;
+        Transform oldParent = this.AMIsObjects.transform;
+        while (oldParent.childCount > 0)
+        {
+            oldParent.GetChild(oldParent.childCount - 1).SetParent(newParent, true);
+        }
     }
 
     // Activate/Deactivate all Infopoints.
