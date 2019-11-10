@@ -119,7 +119,7 @@ public class SceneController : MonoBehaviour
         // IMPORTANT: probably you have to adjust this when moving poster to other place
         this.poster.transform.Rotate(0, 180, 0);
 
-        // all objects of AMIs world are children of poster
+        // TODO show something else than just poster to show that scanned successful
         this.poster.SetActive(true);
 
         // show AMIs world
