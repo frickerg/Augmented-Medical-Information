@@ -35,14 +35,20 @@ public class SceneController : MonoBehaviour
     private Vector3 lastAnchoredPosition;
     private Quaternion lastAnchoredRotation;
 
+    // holds all objects of AMIs world, when anchored are set as children from poster to be aligned correctly
+    public GameObject AMIsObjects;
+
     // Start is called before the first frame update.
     void Start()
     {
         //TODO start onboarding in other controller and then activate this controller
-
-        this.SetupScene();
         // TODO exchange to our own overlay
         FitToScanOverlay.SetActive(true);
+    }
+
+    private void Awake()
+    {
+        this.SetupScene();
     }
 
     // Update is called once per frame.
@@ -109,8 +115,15 @@ public class SceneController : MonoBehaviour
         this.poster.transform.rotation = imageRotation;
         this.poster.transform.Rotate(90, 0, 0);
 
-        // all objects of AMIs world are children of poster
+        // we rotate poster with world because we see the backside of it
+        // IMPORTANT: probably you have to adjust this when moving poster to other place
+        this.poster.transform.Rotate(0, 180, 0);
+
+        // TODO show something else than just poster to show that scanned successful
         this.poster.SetActive(true);
+
+        // show AMIs world
+        this.AMIsObjects.SetActive(true);
 
         // show information points
         this.SetActiveInfoPoints(true);
@@ -125,6 +138,15 @@ public class SceneController : MonoBehaviour
         }
         this.SetActiveInfoPoints(false);
         this.poster.SetActive(false);
+        this.AMIsObjects.SetActive(false);
+
+        // children of AMIs world become child of poster so they follow anchor
+        Transform newParent = this.poster.transform;
+        Transform oldParent = this.AMIsObjects.transform;
+        while (oldParent.childCount > 0)
+        {
+            oldParent.GetChild(oldParent.childCount - 1).SetParent(newParent, true);
+        }
     }
 
     // Activate/Deactivate all Infopoints.
