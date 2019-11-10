@@ -115,6 +115,10 @@ public class SceneController : MonoBehaviour
         this.poster.transform.rotation = imageRotation;
         this.poster.transform.Rotate(90, 0, 0);
 
+        // we rotate poster with world because we see the backside of it
+        // IMPORTANT: probably you have to adjust this when moving poster to other place
+        this.poster.transform.Rotate(0, 180, 0);
+
         // all objects of AMIs world are children of poster
         this.poster.SetActive(true);
 
@@ -132,10 +136,9 @@ public class SceneController : MonoBehaviour
         foreach(var arrow in this.arrows) {
             arrow.SetActive(false);
         }
-        // TODO enable again when it workst
-        //this.SetActiveInfoPoints(false);
-        //this.poster.SetActive(false);
-        //this.AMIsObjects.SetActive(false);
+        this.SetActiveInfoPoints(false);
+        this.poster.SetActive(false);
+        this.AMIsObjects.SetActive(false);
 
         // children of AMIs world become child of poster so they follow anchor
         Transform newParent = this.poster.transform;
