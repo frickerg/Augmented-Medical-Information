@@ -2,12 +2,12 @@ image: gableroux/unity3d:2019.2.11f1
 
 stages:
   - build_and_test
-  - post_build
+  - deploy
 
 # If you are looking for a place where to add 'UNITY_LICENSE_FILE' nad secrets, please visit your project's gitlab page:
 # settings > CI/CD > Variables instead
 variables:
-  BUILD_NAME: AMI
+  BUILD_NAME: ExampleProjectName
   UNITY_ACTIVATION_FILE: ./unity3d.alf
 
 .unity_before_script: &unity_before_script
@@ -65,33 +65,48 @@ test-editmode:
 #   only:
 #     - master
 
+build-StandaloneLinux64:
+  <<: *build
+  variables:
+    BUILD_TARGET: StandaloneLinux64
+
+build-StandaloneOSX:
+  <<: *build
+  image: gableroux/unity3d:2019.2.11f1-mac
+  variables:
+    BUILD_TARGET: StandaloneOSX
+
+#Note: build target names changed in recent versions, use this for versions < 2017.2:
+# build-StandaloneOSXUniversal:
+#   <<: *build
+#   variables:
+#     BUILD_TARGET: StandaloneOSXUniversal
+
+build-StandaloneWindows64:
+  <<: *build
+  image: gableroux/unity3d:2019.2.11f1-windows
+  variables:
+    BUILD_TARGET: StandaloneWindows64
+
+build-WebGL:
+  <<: *build
+  image: gableroux/unity3d:2019.2.11f1-webgl
+  variables:
+    BUILD_TARGET: WebGL
+
 build-android:
   <<: *build
   image: gableroux/unity3d:2019.2.11f1-android
   variables:
     BUILD_TARGET: Android
-    
-generate-android-apk:
-  image: gableroux/unity3d:2019.2.11f1-android
-  stage: post_build
-  script: |
-    cd ./Builds
-    cd ./$BUILD_TARGET
-    cd ./$BUILD_NAME
-    cd ./$BUILD_NAME
-    ls -ahl
-    gradle assembleRelease
-    ls -ahl
-    find . -name '*.apk'
-    ls -ahl build/outputs/apk/
-# retry because sometimes checkingout artifacts fails
-  retry: 2
+
+pages:
+  image: alpine:latest
+  stage: deploy
+  script:
+    - mv "./Builds/WebGL/${BUILD_NAME}" public
   artifacts:
-    name: "$BUILD_NAME $CI_PIPELINE_IID $BUILD_TARGET"
     paths:
-      - ./Builds/$BUILD_TARGET/$BUILD_NAME/$BUILD_NAME/build/outputs/apk/release/$BUILD_NAME-release.apk
-
-    expire_in: 1 day
-  variables:
-    BUILD_TARGET: Android
-
+      - public
+  only:
+    - develop
