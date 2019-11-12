@@ -1,6 +1,6 @@
-stages:
-    - build
-
-unity-build:
-    stage: build
-    script: echo 'Building...'
+build-android:
+    <<: *build
+    image: gableroux/unity3d:2019.2.10f1-android
+    variables:
+        BUILD_TARGET: Android
+        BuildOptions: None
