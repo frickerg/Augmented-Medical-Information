@@ -1,74 +1,61 @@
-image: gableroux/unity3d:2019.2.11f1
+image: "registry.gitlab.com/wenqisong/desktopvr-template:latest"
 
 stages:
-  - build_and_test
-  - deploy
-
-# If you are looking for a place where to add 'UNITY_LICENSE_FILE' nad secrets, please visit your project's gitlab page:
-# settings > CI/CD > Variables instead
-variables:
-  BUILD_NAME: ExampleProjectName
-  UNITY_ACTIVATION_FILE: ./unity3d.alf
-
-.unity_before_script: &unity_before_script
-  before_script:
-    - chmod +x ./ci/before_script.sh && ./ci/before_script.sh
-
-.cache: &cache
-  cache:
-    key: "$CI_PROJECT_NAMESPACE-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-$TEST_PLATFORM"
-    paths:
-      - Library/
-
-# run this job when you need to request a license
-# you may need to follow activation steps from documentation
-get-activation-file:
-  when: manual
-  stage: build_and_test
-  script:
-    - chmod +x ./ci/get_activation_file.sh && ./ci/get_activation_file.sh
-  artifacts:
-    paths:
-      - $UNITY_ACTIVATION_FILE
-    expire_in: 10 min # Expiring this as artifacts may contain sensitive data and should not be kept public
-
-.test: &test
-  stage: build_and_test
-  <<: *unity_before_script
-  <<: *cache
-  script:
-    - chmod +x ./ci/test.sh && ./ci/test.sh
-  artifacts:
-    paths:
-      - $(pwd)/$TEST_PLATFORM-results.xml
+  - build
+  - post_build
 
 .build: &build
-  stage: build_and_test
+  stage: build
   <<: *unity_before_script
-  <<: *cache
-  script:
-    - chmod +x ./ci/build.sh && ./ci/build.sh
-  artifacts:
-    paths:
-      - ./Builds/
-#tip: uncomment following lines if you'd like to build only on master branch
-#   only:
-#     - master
+  script: |
+    echo "Building for $BUILD_TARGET"
+    export BUILD_PATH=./Builds/$BUILD_TARGET/$CI_PIPELINE_ID
+    mkdir -p $BUILD_PATH
+    ls -alh $BUILD_PATH
+    xvfb-run --auto-servernum --server-args='-screen 0 640x480x24' \
+      /opt/Unity/Editor/Unity \
+        -projectPath $(pwd) \
+        -quit \
+        -batchmode \
+        -buildTarget $BUILD_TARGET \
+        -customBuildTarget $BUILD_TARGET \
+        -customBuildName $BUILD_NAME \
+        -customBuildPath $BUILD_PATH \
+        -customBuildOptions None \
+        -executeMethod BuildCommand.PerformBuild \
+        -logFile
+    ls -la $BUILD_PATH
+    ls -la ./Builds/$BUILD_TARGET
+    [ -n "$(ls -A $BUILD_PATH)" ] # fail job if build folder is empty
 
-build-android:
-  <<: *build
-  image: gableroux/unity3d:2019.2.11f1-android
-  variables:
-    BUILD_TARGET: Android
-
-pages:
-  image: alpine:latest
-  stage: deploy
-  script:
-    - mv "./Builds/WebGL/${BUILD_NAME}" public
-  artifacts:
-    paths:
-      - public
+build-Android:
   only:
     - develop
+  image: "registry.gitlab.com/wenqisong/desktopvr-template:latest"
+  <<: *build
+  variables:
+    BUILD_TARGET: Android
+    
+generate-android-apk:
+  image: gableroux/unity:2019.2.11f1-android
+  stage: post_build
+  script: |
+    cd ./Builds
+    cd ./$BUILD_TARGET
+    cd ./$BUILD_NAME
+    cd ./$BUILD_NAME
+    ls -ahl
+    gradle assembleRelease
+    ls -ahl
+    find . -name '*.apk'
+    ls -ahl build/outputs/apk/
+# retry because sometimes checkingout artifacts fails
+  retry: 2
+  artifacts:
+    name: "$BUILD_NAME $CI_PIPELINE_IID $BUILD_TARGET"
+    paths:
+      - ./Builds/$BUILD_TARGET/$BUILD_NAME/$BUILD_NAME/build/outputs/apk/release/$BUILD_NAME-release.apk
 
+    expire_in: 1 day
+  variables:
+    BUILD_TARGET: Android
