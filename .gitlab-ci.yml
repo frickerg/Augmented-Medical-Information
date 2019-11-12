@@ -1,4 +1,4 @@
-image: "registry.gitlab.com/wenqisong/desktopvr-template:latest"
+image: gableroux/unity:2019.2.11f1-android
 
 stages:
   - build
