@@ -2,10 +2,10 @@ image: gableroux/unity3d:2019.2.12f1
 
 stages:
   - build_and_test
-  - deploy
 
 # If you are looking for a place where to add 'UNITY_LICENSE_FILE' nad secrets, please visit your project's gitlab page:
 # settings > CI/CD > Variables instead
+# CAUTION: when updating to new unity editor version you need to update licsense in gitlab ci variables
 variables:
   BUILD_NAME: ExampleProjectName
   UNITY_ACTIVATION_FILE: ./unity3d.alf
@@ -65,48 +65,8 @@ test-editmode:
 #   only:
 #     - master
 
-build-StandaloneLinux64:
-  <<: *build
-  variables:
-    BUILD_TARGET: StandaloneLinux64
-
-build-StandaloneOSX:
-  <<: *build
-  image: gableroux/unity3d:2019.2.12f1-mac
-  variables:
-    BUILD_TARGET: StandaloneOSX
-
-#Note: build target names changed in recent versions, use this for versions < 2017.2:
-# build-StandaloneOSXUniversal:
-#   <<: *build
-#   variables:
-#     BUILD_TARGET: StandaloneOSXUniversal
-
-build-StandaloneWindows64:
-  <<: *build
-  image: gableroux/unity3d:2019.2.12f1-windows
-  variables:
-    BUILD_TARGET: StandaloneWindows64
-
-build-WebGL:
-  <<: *build
-  image: gableroux/unity3d:2019.2.12f1-webgl
-  variables:
-    BUILD_TARGET: WebGL
-
 build-android:
   <<: *build
   image: gableroux/unity3d:2019.2.12f1-android
   variables:
     BUILD_TARGET: Android
-
-pages:
-  image: alpine:latest
-  stage: deploy
-  script:
-    - mv "./Builds/WebGL/${BUILD_NAME}" public
-  artifacts:
-    paths:
-      - public
-  only:
-    - develop
