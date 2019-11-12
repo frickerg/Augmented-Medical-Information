@@ -1,0 +1,6 @@
+stages:
+  - build
+ 
+ unity-build:
+  stage: build
+  script: echo 'Building...'
