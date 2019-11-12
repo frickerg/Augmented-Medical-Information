@@ -42,16 +42,6 @@ get-activation-file:
     paths:
       - $(pwd)/$TEST_PLATFORM-results.xml
 
-test-playmode:
-  <<: *test
-  variables:
-    TEST_PLATFORM: playmode
-
-test-editmode:
-  <<: *test
-  variables:
-    TEST_PLATFORM: editmode
-
 .build: &build
   stage: build_and_test
   <<: *unity_before_script
