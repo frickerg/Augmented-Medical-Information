@@ -73,7 +73,7 @@ build-android:
     
 generate-android-apk:
   image: gableroux/unity3d:2019.2.11f1-android
-  stage: post-build
+  stage: post_build
   script: |
     cd ./Builds
     cd ./$BUILD_TARGET
