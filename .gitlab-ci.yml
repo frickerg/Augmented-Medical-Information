@@ -1,6 +1,6 @@
 stages:
-  - build
- 
- unity-build:
-  stage: build
-  script: echo 'Building...'
+    - build
+
+unity-build:
+    stage: build
+    script: echo 'Building...'
