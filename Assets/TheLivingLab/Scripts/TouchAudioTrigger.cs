@@ -3,21 +3,31 @@ using System.Collections;
 
 public class TriggerAudio : MonoBehaviour
 {
+    // camera of the scene, needed to locate touch
     public Camera mainCamera;
+
+    // audio source to attach audio clip
     public AudioSource audioSource;
+
+    // icon to press
     public GameObject playIcon;
 
-    // Use this for initialization
-    void Start()
-    {
+    // play and pause textures to switch when touched
+    public Material playMat;
+    public Material pauseMat;
 
+    // the renderer of this object
+    private Renderer iconRenderer;
+
+    // initialize renderer
+    private void Start()
+    {
+        this.iconRenderer = GetComponent<Renderer>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        playIcon.transform.LookAt(mainCamera.transform);
-
         if ((Input.touchCount > 0) && (Input.GetTouch(0).phase == TouchPhase.Began))
         {
             Ray raycast = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
@@ -30,21 +40,20 @@ public class TriggerAudio : MonoBehaviour
                 {
                     if (!audioSource.isPlaying)
                     {
-                        // play the video and show pause button
+                        // play the video and cloth with pause material
                         audioSource.Play();
-                        //playIcon.SetActive(false);
-                        //playIcon.SetActive(true);
+                        this.iconRenderer.material = this.pauseMat;
                     }
                     else
                     {
-                        // pause the video and show play button
+                        // pause the video and cloth with play material
                         audioSource.Pause();
-                        //playIcon.SetActive(true);
-                        //playIcon.SetActive(false);
+                        this.iconRenderer.material = this.playMat;
                     }
                 }
             }
         }
 
+        // TODO change material to play again, when audio clip is finished
     }
 }
