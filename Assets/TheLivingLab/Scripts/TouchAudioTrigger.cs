@@ -16,6 +16,7 @@ public class TouchAudioTrigger : MonoBehaviour
     // play and pause textures to switch when touched
     public Material playMat;
     public Material pauseMat;
+    public Material resumeMat;
 
     // arrows that should be showed when audio is finished
     public List<GameObject> arrowsToTrigger;
