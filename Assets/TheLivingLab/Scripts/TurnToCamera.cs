@@ -4,7 +4,7 @@ using UnityEngine;
 using GoogleARCore;
 
 // Turns an object always to camera.
-public class TurnSlightlyToCamera : MonoBehaviour
+public class TurnToCamera : MonoBehaviour
 {
     // holds the information point
     public GameObject objectToTurn;
@@ -20,7 +20,5 @@ public class TurnSlightlyToCamera : MonoBehaviour
                                        this.transform.position.y,
                                        camera.transform.position.z);
         this.transform.LookAt(targetPostition);
-
-        //TODO make object turn only a certain degrees from starting position, for example 45 degrees
     }
 }
