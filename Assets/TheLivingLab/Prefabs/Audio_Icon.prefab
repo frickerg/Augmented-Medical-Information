@@ -11,10 +11,10 @@ GameObject:
   - component: {fileID: 1050882808176779275}
   - component: {fileID: 1050882808176779279}
   - component: {fileID: 1050882808176779276}
-  - component: {fileID: 1050882808176779274}
-  - component: {fileID: 1050882808176779277}
   - component: {fileID: 1050882808176779278}
   - component: {fileID: -2166210733371918129}
+  - component: {fileID: 8071088063227963278}
+  - component: {fileID: 5908150937169606116}
   m_Layer: 0
   m_Name: Audio_Icon
   m_TagString: PlayIcon
@@ -83,7 +83,35 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!82 &1050882808176779274
+--- !u!114 &1050882808176779278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1050882808176779272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f327721ca8f94b64f86e0e8f2bf126c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectToTurn: {fileID: 1050882808176779272}
+  camera: {fileID: 0}
+--- !u!64 &-2166210733371918129
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1050882808176779272}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: -7387706064836869012, guid: 91520470b24c84e4a8c5f3507615d912, type: 3}
+--- !u!82 &8071088063227963278
 AudioSource:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -94,7 +122,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 0
+  m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -179,7 +207,7 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &1050882808176779277
+--- !u!114 &5908150937169606116
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -192,38 +220,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 0}
-  audioSource: {fileID: 1050882808176779274}
-  playIcon: {fileID: 1050882808176779272}
-  playMat: {fileID: 2100000, guid: b940f581bf174a6419c51fbcfe46d055, type: 2}
-  pauseMat: {fileID: 2100000, guid: e36202d50877c9441872fc67a00b21af, type: 2}
---- !u!114 &1050882808176779278
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1050882808176779272}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f327721ca8f94b64f86e0e8f2bf126c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objectToTurn: {fileID: 1050882808176779272}
-  camera: {fileID: 0}
---- !u!64 &-2166210733371918129
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1050882808176779272}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Convex: 0
-  m_CookingOptions: 14
-  m_Mesh: {fileID: -7387706064836869012, guid: 91520470b24c84e4a8c5f3507615d912, type: 3}
+  playIcon: {fileID: 0}
+  playMat: {fileID: 0}
+  pauseMat: {fileID: 0}
 --- !u!1 &4237614967390434342
 GameObject:
   m_ObjectHideFlags: 0
