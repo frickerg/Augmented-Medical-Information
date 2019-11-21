@@ -6,6 +6,7 @@ TagManager:
   tags:
   - ManipulationSystem
   - VideoScreen
+  - PlayIcon
   layers:
   - Default
   - TransparentFX
