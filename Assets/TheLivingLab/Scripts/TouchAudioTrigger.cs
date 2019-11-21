@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TriggerAudio : MonoBehaviour
+public class TouchAudioTrigger : MonoBehaviour
 {
     // camera of the scene, needed to locate touch
     public Camera mainCamera;
