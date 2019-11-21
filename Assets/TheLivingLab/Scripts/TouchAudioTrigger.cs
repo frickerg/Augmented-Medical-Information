@@ -1,13 +1,14 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
+using GoogleARCore;
 
 public class TouchAudioTrigger : MonoBehaviour
 {
     // camera of the scene, needed to locate touch
     public Camera mainCamera;
 
-    // audio source to attach audio clip
-    public AudioSource audioSource;
+    // audio source where audio clip ist stored
+    private AudioSource audioSource;
 
     // icon to press
     public GameObject playIcon;
@@ -16,13 +17,17 @@ public class TouchAudioTrigger : MonoBehaviour
     public Material playMat;
     public Material pauseMat;
 
+    // arrows that should be showed when audio is finished
+    public List<GameObject> arrowsToTrigger;
+
     // the renderer of this object
     private Renderer iconRenderer;
 
-    // initialize renderer
+    // initialize renderer and audio source from object
     private void Start()
     {
-        this.iconRenderer = GetComponent<Renderer>();
+        this.iconRenderer = this.playIcon.GetComponent<Renderer>();
+        this.audioSource = this.playIcon.GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -34,12 +39,11 @@ public class TouchAudioTrigger : MonoBehaviour
             RaycastHit raycastHit;
             if (Physics.Raycast(raycast, out raycastHit))
             {
-                // check for tag of objects collider
-                // CAUTION 1: objects to touch have to have a collider
-                // CAUTION 2: when I set the tag in editor it didn't work until I restarted unity...
-                if (raycastHit.collider.CompareTag("PlayIcon"))
+                // raycast collider must be same tag as unique object collider!
+                // CAUTION: when I set the tag in editor it didn't work until I restarted unity...
+                if (raycastHit.collider.CompareTag(this.playIcon.tag))
                 {
-                    if (!audioSource.isPlaying)
+                    if (audioSource.clip != null && !audioSource.isPlaying)
                     {
                         // play the video and cloth with pause material
                         audioSource.Play();
@@ -56,5 +60,11 @@ public class TouchAudioTrigger : MonoBehaviour
         }
 
         // TODO change material to play again, when audio clip is finished
+    }
+
+    // Displays the arrows
+    private void showArrows()
+    {
+        //TODO
     }
 }
