@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 1050882808176779274}
   - component: {fileID: 1050882808176779277}
   - component: {fileID: 1050882808176779278}
+  - component: {fileID: -2166210733371918129}
   m_Layer: 0
   m_Name: Audio_Icon
   m_TagString: PlayIcon
@@ -209,6 +210,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectToTurn: {fileID: 1050882808176779272}
   camera: {fileID: 0}
+--- !u!64 &-2166210733371918129
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1050882808176779272}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Convex: 0
+  m_CookingOptions: 14
+  m_Mesh: {fileID: -7387706064836869012, guid: 91520470b24c84e4a8c5f3507615d912, type: 3}
 --- !u!1 &4237614967390434342
 GameObject:
   m_ObjectHideFlags: 0

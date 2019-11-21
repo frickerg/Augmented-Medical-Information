@@ -35,7 +35,8 @@ public class TouchAudioTrigger : MonoBehaviour
             if (Physics.Raycast(raycast, out raycastHit))
             {
                 // check for tag of objects collider
-                // CAUTION: when I set the tag in editor it didn't work until I restarted unity...
+                // CAUTION 1: objects to touch have to have a collider
+                // CAUTION 2: when I set the tag in editor it didn't work until I restarted unity...
                 if (raycastHit.collider.CompareTag("PlayIcon"))
                 {
                     if (!audioSource.isPlaying)

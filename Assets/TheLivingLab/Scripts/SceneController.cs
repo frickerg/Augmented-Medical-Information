@@ -12,13 +12,13 @@ public class SceneController : MonoBehaviour
     // poster in the virtual world
     public GameObject poster;
 
-    // holds all information points at stations
-    public List<GameObject> informationPoints;
+    // holds object with information points as children
+    public GameObject informationPoints;
 
-    // holds all arrows
-    public List<GameObject> arrows;
+    // holds object with arrows as children
+    public GameObject arrows;
 
-    // holds all objects of AMIs world, when anchored are set as children from poster to be aligned correctly
+    // holds all objects of AMIs world, are set as children of poster in SetupScene()
     public GameObject AMIsObjects;
 
     private void Awake()
@@ -38,23 +38,16 @@ public class SceneController : MonoBehaviour
     // synchronization with real world.
     public void EnableAMIsWorld()
     {
-        // show AMIs world
-        this.AMIsObjects.SetActive(true);
-
-        // show information points
-        this.SetActiveInfoPoints(true);
+        // TODO show something else than just poster to show that scanned successful
+        this.poster.SetActive(true);
     }
 
     // Hide all objects from scene.
     // should be called at startup
     private void SetupScene()
     {
-        foreach(var arrow in this.arrows) {
-            arrow.SetActive(false);
-        }
-        this.SetActiveInfoPoints(false);
+        this.SetActiveArrows(false);
         this.poster.SetActive(false);
-        this.AMIsObjects.SetActive(false);
 
         // children of AMIs world become child of poster so they follow anchor
         Transform newParent = this.poster.transform;
@@ -68,9 +61,22 @@ public class SceneController : MonoBehaviour
     // Activate/Deactivate all Infopoints.
     private void SetActiveInfoPoints(bool isActive)
     {
-        foreach(var point in this.informationPoints)
+        // loop over children of infopoint holder
+        Transform[] allPoints = this.informationPoints.GetComponentsInChildren<Transform>();
+        foreach (Transform infoPoint in allPoints)
         {
-            point.SetActive(isActive);
+            infoPoint.gameObject.SetActive(isActive);
+        }
+    }
+
+    // Activate/Deactivate all arrows.
+    private void SetActiveArrows(bool isActive)
+    {
+        // loop over children of arrow holder
+        Transform[] allArrows = this.arrows.GetComponentsInChildren<Transform>();
+        foreach (Transform arrow in allArrows)
+        {
+            arrow.gameObject.SetActive(isActive);
         }
     }
 }
