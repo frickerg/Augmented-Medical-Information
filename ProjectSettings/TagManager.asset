@@ -6,7 +6,10 @@ TagManager:
   tags:
   - ManipulationSystem
   - VideoScreen
-  - PlayIcon
+  - KASTag
+  - RADTag
+  - LISTag
+  - IPSTag
   layers:
   - Default
   - TransparentFX

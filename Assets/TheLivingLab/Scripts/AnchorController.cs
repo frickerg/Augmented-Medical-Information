@@ -44,6 +44,8 @@ public class AnchorController : MonoBehaviour
                     // set anchor to persist the picture points around this object
                     // (other recognised picture points are thrown away to stay performant)
                     this.SetAnchor(image);
+                    // align the rest of AMIs world according to poster
+                    this.syncTheWorld(image);
                     this.isLookingForPoster = false;
                     onboarding.DisableScanOverlay();
                 }
@@ -69,9 +71,6 @@ public class AnchorController : MonoBehaviour
         // keep the last position and rotation
         this.lastAnchoredPosition = anchor.transform.position;
         this.lastAnchoredRotation = anchor.transform.rotation;
-
-        // align the rest of AMIs world according to poster
-        this.syncTheWorld(image);
     }
 
     // Position AMIs world according to poster.
@@ -86,9 +85,6 @@ public class AnchorController : MonoBehaviour
         // we rotate poster with world because we see the backside of it
         // IMPORTANT: probably you have to adjust this when moving poster to other place
         this.scene.poster.transform.Rotate(0, 180, 0);
-
-        // TODO show something else than just poster to show that scanned successful
-        this.scene.poster.SetActive(true);
 
         this.scene.EnableAMIsWorld();
     }
