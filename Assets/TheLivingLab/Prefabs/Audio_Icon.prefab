@@ -11,14 +11,14 @@ GameObject:
   - component: {fileID: 1050882808176779275}
   - component: {fileID: 1050882808176779279}
   - component: {fileID: 1050882808176779276}
-  - component: {fileID: 1050882808176779278}
   - component: {fileID: -2166210733371918129}
   - component: {fileID: 8071088063227963278}
+  - component: {fileID: 1050882808176779278}
   - component: {fileID: 5908150937169606116}
   - component: {fileID: -6542910151064352410}
   m_Layer: 0
   m_Name: Audio_Icon
-  m_TagString: PlayIcon
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -84,20 +84,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &1050882808176779278
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1050882808176779272}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f327721ca8f94b64f86e0e8f2bf126c7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objectToTurn: {fileID: 1050882808176779272}
-  camera: {fileID: 0}
 --- !u!64 &-2166210733371918129
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -123,7 +109,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0
@@ -131,9 +117,9 @@ AudioSource:
   Spatialize: 0
   SpatializePostEffects: 0
   Priority: 128
-  DopplerLevel: 1
+  DopplerLevel: 2
   MinDistance: 1
-  MaxDistance: 500
+  MaxDistance: 3
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -168,7 +154,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -208,6 +194,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &1050882808176779278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1050882808176779272}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f327721ca8f94b64f86e0e8f2bf126c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectToTurn: {fileID: 0}
+  camera: {fileID: 0}
 --- !u!114 &5908150937169606116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -222,8 +222,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mainCamera: {fileID: 0}
   playIcon: {fileID: 0}
-  playMat: {fileID: 0}
-  pauseMat: {fileID: 0}
+  playMat: {fileID: 2100000, guid: b940f581bf174a6419c51fbcfe46d055, type: 2}
+  pauseMat: {fileID: 2100000, guid: e36202d50877c9441872fc67a00b21af, type: 2}
+  resumeMat: {fileID: 2100000, guid: 3964232b39eb9e9419d3dff8a14feb42, type: 2}
+  arrowsToTrigger: []
 --- !u!114 &-6542910151064352410
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -265,14 +267,14 @@ RectTransform:
   m_GameObject: {fileID: 4237614967390434342}
   m_LocalRotation: {x: -0, y: 1, z: -0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1.666669, y: 1.6666665, z: 1.666669}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1050882808176779275}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0.42002678, y: -0.8819998}
+  m_AnchoredPosition: {x: -0.25, y: -0.608}
   m_SizeDelta: {x: 0.2, y: 0.1}
   m_Pivot: {x: 0, y: 0}
 --- !u!23 &4237614967390434331
