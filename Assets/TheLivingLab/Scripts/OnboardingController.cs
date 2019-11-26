@@ -18,16 +18,26 @@ public class OnboardingController : MonoBehaviour
     // access to methods of AnchorController
     public AnchorController anchor;
 
+    // GameObject that holds all GUI-Elements for the Onboarding
+    public GameObject Onboarding; 
+
     // Start is called before the first frame update
     void Start()
     {
+
+
+
         //TODO handle camera permission by ourselves to show proper message
         // Source: https://docs.unity3d.com/Manual/android-manifest.html
-
-        this.ShowEarphonesMessage();
-
+        //this.ShowEarphonesMessage();
         // check for errors
         this.QuitOnConnectionErrors();
+    }
+
+    public void HideOnboarding()
+    {
+        Onboarding.SetActive(false);
+        this.ShowScanRoomMessage();
     }
 
     // Shows message that user should use earphones for a

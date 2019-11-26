@@ -5,38 +5,39 @@ using UnityEngine.Android;
 
 public class CameraTest : MonoBehaviour
 {
-    //TODO Ammend for Camera instead of Microphone
+    
     GameObject dialog = null;
-
-    void Start()
+    // War void Start
+    public void CheckCamera()
     {
 #if PLATFORM_ANDROID
-        if (!Permission.HasUserAuthorizedPermission(Permission.Microphone))
+        if (!Permission.HasUserAuthorizedPermission(Permission.Camera))
         {
-            Permission.RequestUserPermission(Permission.Microphone);
+            Permission.RequestUserPermission(Permission.Camera);
             dialog = new GameObject();
+            
         }
 #endif
     }
 
-    void OnGUI()
+    void Ongui()
     {
-#if PLATFORM_ANDROID
-        if (!Permission.HasUserAuthorizedPermission(Permission.Microphone))
-        {
-            // The user denied permission to use the microphone.
-            // Display a message explaining why you need it with Yes/No buttons.
-            // If the user says yes then present the request again
-            // Display a dialog here.
-            dialog.AddComponent<PermissionsRationaleDialog>();
-            return;
-        }
-        else if (dialog != null)
-        {
-            Destroy(dialog);
-        }
+#if platform_android
+            if (!permission.hasuserauthorizedpermission(permission.camera))
+            {
+                // the user denied permission to use the camera.
+                // display a message explaining why you need it with yes/no buttons.
+                // if the user says yes then present the request again
+                // display a dialog here.
+                dialog.addcomponent<permissionsrationaledialog>();
+                return;
+            }
+            else if (dialog != null)
+            {
+                destroy(dialog);
+            }
 #endif
 
-        // Now you can do things with the microphone
+        // now you can do things with the camera
     }
 }

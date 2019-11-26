@@ -8,9 +8,14 @@ public class MenuManager : MonoBehaviour
 
     public void Start()
     {
-        ShowMenu(CurrentMenu);
+        //ShowMenu(CurrentMenu);
+        CurrentMenu.IsOpen = true;
     }
 
+    /// <summary>
+    /// Activate Animation of Menu by setting the IsOpen-Bool
+    /// </summary>
+    /// <param name="menu"></param>
     public void ShowMenu(Menu menu)
     {
         if (CurrentMenu != null)
