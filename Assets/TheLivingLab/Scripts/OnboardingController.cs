@@ -18,6 +18,7 @@ public class OnboardingController : MonoBehaviour
     // access to methods of AnchorController
     public AnchorController anchor;
 
+    // true when user granted camera permission, stops checking for camera permission
     private bool isCameraPermissionGranted = false;
 
     // Start is called before the first frame update
