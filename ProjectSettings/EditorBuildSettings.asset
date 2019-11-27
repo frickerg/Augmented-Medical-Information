@@ -11,7 +11,10 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/TheLivingLab/Scenes/The_living_lab.unity
     guid: bdd3c75b826122a49969d0ebe7159ca3
+  - enabled: 0
+    path: 
+    guid: 00000000000000000000000000000000
   - enabled: 1
-    path: Assets/TheLivingLab/Scenes/#11-onboardingUI.unity
-    guid: e2156c28df5be40bfbd3854d5ba93ab8
+    path: Assets/TheLivingLab/Scenes/#11_onboarding.unity
+    guid: dd98abd8157d3c64c817c81cb357f7ee
   m_configObjects: {}
