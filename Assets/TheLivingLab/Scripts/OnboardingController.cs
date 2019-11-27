@@ -21,6 +21,9 @@ public class OnboardingController : MonoBehaviour
     // true when user granted camera permission, stops checking for camera permission
     private bool isCameraPermissionGranted = false;
 
+    // GameObject that holds all GUI-Elements for the Onboarding
+    public GameObject Onboarding; 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -34,6 +37,12 @@ public class OnboardingController : MonoBehaviour
         {
             this.CheckForCameraPermission();
         }
+    }
+
+    public void HideOnboarding()
+    {
+        Onboarding.SetActive(false);
+        this.ShowScanRoomMessage();
     }
 
     // Shows message that user should use earphones for a
