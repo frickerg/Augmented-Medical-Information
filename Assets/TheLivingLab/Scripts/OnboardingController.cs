@@ -22,13 +22,21 @@ public class OnboardingController : MonoBehaviour
     private bool isCameraPermissionGranted = false;
 
     // GameObject that holds all GUI-Elements for the Onboarding
-    public GameObject Onboarding; 
+    public GameObject Onboarding;
+
+    //public CanvasGroup _canvasGroup;
+
+    public GameObject CameraPermission_withoutanimation;
+
 
     // Start is called before the first frame update
+    //ev. in Awake-Methode
     void Start()
     {
         // check for error in beginning
         this.QuitOnConnectionErrors();
+        
+
     }
 
     void Update()
@@ -36,31 +44,23 @@ public class OnboardingController : MonoBehaviour
         if (!this.isCameraPermissionGranted)
         {
             this.CheckForCameraPermission();
+           
         }
+       
     }
 
     public void HideOnboarding()
     {
         Onboarding.SetActive(false);
-        this.ShowScanRoomMessage();
-    }
-
-    // Shows message that user should use earphones for a
-    // more immersive experience.
-    private void ShowEarphonesMessage()
-    {
-        // TODO
-        // click button enables next step
-        this.ShowScanRoomMessage();
-    }
-
-    // Shows message that user should scan
-    // room a bit to calibrate AMI.
-    private void ShowScanRoomMessage()
-    {
-        //TODO when scanned (distance to ultimate center is smaller than 0.5 meters) start next step
         this.ShowScanPosterMessage();
+       // _canvasGroup.blocksRaycasts = _canvasGroup.interactable = true;
     }
+
+    public void QuitApplication()
+    {
+        Application.Quit();
+    }
+
 
     // Shows message that user should
     // scan the poster to start AMIs experience.
@@ -76,6 +76,11 @@ public class OnboardingController : MonoBehaviour
     public void DisableScanOverlay()
     {
         this.FitToScanOverlay.SetActive(false);
+    }
+
+    public void DisableCameraOverlay()
+    {
+        this.CameraPermission_withoutanimation.SetActive(false);
     }
 
     // Catches errors
@@ -97,11 +102,15 @@ public class OnboardingController : MonoBehaviour
         if (Session.Status == SessionStatus.ErrorPermissionNotGranted)
         {
             // show this when camera permission is not granted
-            this.NoPermissionOverlay.SetActive(true);
+            this.Onboarding.SetActive(false);
+            this.CameraPermission_withoutanimation.SetActive(true);
         } else if (Session.Status == SessionStatus.Tracking)
         {
-            this.NoPermissionOverlay.SetActive(false);
+            
+            this.CameraPermission_withoutanimation.SetActive(false);
+            this.Onboarding.SetActive(true);
             this.isCameraPermissionGranted = true;
+
             //this.Onboarding.SetActive(true);
         }
     }
