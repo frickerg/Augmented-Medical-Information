@@ -102,7 +102,7 @@ public class OnboardingController : MonoBehaviour
         {
             this.NoPermissionOverlay.SetActive(false);
             this.isCameraPermissionGranted = true;
-            this.ShowEarphonesMessage();
+            //this.Onboarding.SetActive(true);
         }
     }
 }
