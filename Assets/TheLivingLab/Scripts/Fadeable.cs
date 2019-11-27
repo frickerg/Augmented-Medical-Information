@@ -1,14 +1,14 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-// Script to fade in an object. Object will be set transparent when script started.
+// Fade functionality for a 3D object with mesh renderer.
 // Call FadeIn() or FadeOut() to trigger effect with desired fade duration in seconds.
 // To call FadeIn() the object should be made transparent first by calling Hide().
 // source for basic idea of fade: https://www.youtube.com/watch?v=oNz4I0RfsEg
 // calculation for duration by josh :)
 public class Fadeable : MonoBehaviour
 {
-    // renderer of object
+    // mesh renderer of object
     private MeshRenderer renderer;
 
     // desired fade duration
