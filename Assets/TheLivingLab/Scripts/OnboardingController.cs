@@ -107,9 +107,9 @@ public class OnboardingController : MonoBehaviour
             // show this when camera permission is not granted
             this.Onboarding.SetActive(false);
             this.CameraPermission_withoutanimation.SetActive(true);
-        } else if (Session.Status == SessionStatus.Tracking)
+        } else if (Session.Status == SessionStatus.Tracking || Session.Status == SessionStatus.Initializing)
         {
-            
+            // camera permission was given
             this.CameraPermission_withoutanimation.SetActive(false);
             this.Onboarding.SetActive(true);
             this.isCameraPermissionGranted = true;
