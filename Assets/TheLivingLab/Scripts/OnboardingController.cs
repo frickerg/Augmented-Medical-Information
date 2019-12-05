@@ -30,6 +30,8 @@ public class OnboardingController : MonoBehaviour
 
     public GameObject CameraPermission_withoutanimation;
 
+    public GameObject VolumeOverlay;
+
 
     // Start is called before the first frame update
     //ev. in Awake-Methode
@@ -79,6 +81,7 @@ public class OnboardingController : MonoBehaviour
     public void DisableScanOverlay()
     {
         this.FitToScanOverlay.SetActive(false);
+        this.VolumeOverlay.SetActive(true);
     }
 
     public void DisableCameraOverlay()
