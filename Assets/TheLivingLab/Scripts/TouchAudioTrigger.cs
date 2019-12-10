@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections.Generic;
 using GoogleARCore;
 
@@ -18,6 +18,8 @@ public class TouchAudioTrigger : MonoBehaviour
     public Material pauseMat;
     public Material resumeMat;
 
+    public bool canResume;
+
     // arrows that should be showed when audio is finished
     public List<GameObject> arrowsToTrigger;
 
@@ -27,6 +29,7 @@ public class TouchAudioTrigger : MonoBehaviour
     // initialize renderer and audio source from object
     private void Start()
     {
+        this.canResume = false;
         this.iconRenderer = this.playIcon.GetComponent<Renderer>();
         this.audioSource = this.playIcon.GetComponent<AudioSource>();
     }
@@ -34,33 +37,40 @@ public class TouchAudioTrigger : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ((Input.touchCount > 0) && (Input.GetTouch(0).phase == TouchPhase.Began))
+        if (Input.GetTouch(0).phase == TouchPhase.Began)
         {
             Ray raycast = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-            RaycastHit raycastHit;
-            if (Physics.Raycast(raycast, out raycastHit))
+            if (Physics.Raycast(raycast, out RaycastHit raycastHit))
             {
                 // raycast collider must be same tag as unique object collider!
                 // CAUTION: when I set the tag in editor it didn't work until I restarted unity...
                 if (raycastHit.collider.CompareTag(this.playIcon.tag))
                 {
-                    if (audioSource.clip != null && !audioSource.isPlaying)
+                    if (this.audioSource.clip != null && !this.audioSource.isPlaying)
                     {
                         // play the video and cloth with pause material
-                        audioSource.Play();
+                        this.audioSource.Play();
                         this.iconRenderer.material = this.pauseMat;
+
+                        // increase play count
+                        this.canResume = false;
                     }
                     else
                     {
                         // pause the video and cloth with play material
-                        audioSource.Pause();
-                        this.iconRenderer.material = this.playMat;
+                        this.audioSource.Pause();
+                        this.iconRenderer.material = this.resumeMat;
+
+                        // audio can be resumed
+                        this.canResume = true;
                     }
                 }
             }
         }
-
-        // TODO change material to play again, when audio clip is finished
+        else if (!this.audioSource.isPlaying && !this.canResume)
+        {
+            this.iconRenderer.material = this.playMat;
+        }
     }
 
     // Displays the arrows
