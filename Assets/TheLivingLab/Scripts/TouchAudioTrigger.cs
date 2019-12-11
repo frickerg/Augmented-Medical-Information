@@ -18,6 +18,7 @@ public class TouchAudioTrigger : MonoBehaviour
     public Material pauseMat;
     public Material resumeMat;
 
+    // flag to determine if the audio has been stopped before finish
     public bool canResume;
 
     // arrows that should be showed when audio is finished
@@ -67,7 +68,7 @@ public class TouchAudioTrigger : MonoBehaviour
                 }
             }
         }
-        else if (!this.audioSource.isPlaying && !this.canResume)
+        if (!this.audioSource.isPlaying && !this.canResume)
         {
             this.iconRenderer.material = this.playMat;
         }
