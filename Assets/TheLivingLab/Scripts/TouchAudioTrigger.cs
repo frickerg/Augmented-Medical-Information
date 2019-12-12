@@ -21,11 +21,11 @@ public class TouchAudioTrigger : MonoBehaviour
     // flag to determine if the audio has been stopped before finish
     public bool canResume;
 
-    // arrows that should be showed when audio is finished
-    public List<GameObject> arrowsToTrigger;
-
     // the renderer of this object
     private Renderer iconRenderer;
+
+    // arrows that we want to enable at the end of audio
+    public List<GameObject> arrows;
 
     // initialize renderer and audio source from object
     private void Start()
@@ -68,15 +68,21 @@ public class TouchAudioTrigger : MonoBehaviour
                 }
             }
         }
+        // once audio has stopped playing, fade in the correspondig arrows
         if (!this.audioSource.isPlaying && !this.canResume)
         {
             this.iconRenderer.material = this.playMat;
+            fadeInArrows();
         }
     }
 
-    // Displays the arrows
-    private void showArrows()
+    // fades in selected arrows
+    private void fadeInArrows()
     {
-        //TODO
+        foreach (GameObject arrow in arrows)
+        {
+            Fadeable darthFader = arrow.GetComponent<Fadeable>();
+            darthFader.FadeIn(5f);
+        }
     }
 }
