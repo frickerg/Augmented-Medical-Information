@@ -9,7 +9,7 @@ using UnityEngine;
 public class Fadeable : MonoBehaviour
 {
     // mesh renderer of object
-    private MeshRenderer renderer;
+    private MeshRenderer meshRender;
 
     // desired fade duration
     private float fadeDurationInSeconds;
@@ -17,15 +17,15 @@ public class Fadeable : MonoBehaviour
     // set the mesh renderer of object
     void Awake()
     {
-        renderer = GetComponent<MeshRenderer>();
+        meshRender = GetComponent<MeshRenderer>();
     }
 
     // Hide the object to do fadein later
     public void Hide()
     {
-        Color c = renderer.material.color;
+        Color c = meshRender.material.color;
         c.a = 0f;
-        renderer.material.color = c;
+        meshRender.material.color = c;
     }
 
     // Fades in the object in x seconds.
@@ -44,9 +44,9 @@ public class Fadeable : MonoBehaviour
 
         for (float f = fadeAmount; f <= 1; f += fadeAmount)
         {
-            Color c = renderer.material.color;
+            Color c = meshRender.material.color;
             c.a = f;
-            renderer.material.color = c;
+            meshRender.material.color = c;
             yield return new WaitForSeconds(timeout);
         }
     }
@@ -67,9 +67,9 @@ public class Fadeable : MonoBehaviour
         
         for (float f = 1; f > 0; f -= fadeAmount)
         {
-            Color c = renderer.material.color;
+            Color c = meshRender.material.color;
             c.a = f;
-            renderer.material.color = c;
+            meshRender.material.color = c;
             yield return new WaitForSeconds(timeout);
         }
     }
