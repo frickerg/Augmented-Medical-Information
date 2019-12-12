@@ -28,11 +28,18 @@ public class TouchAudioTrigger : MonoBehaviour
     public List<GameObject> arrows;
 
     // initialize renderer and audio source from object
+    // hide the arrows with Fadeable.cs
     private void Start()
     {
         this.canResume = false;
         this.iconRenderer = this.playIcon.GetComponent<Renderer>();
         this.audioSource = this.playIcon.GetComponent<AudioSource>();
+
+        foreach (GameObject arrow in arrows)
+        {
+            Fadeable darthFader = arrow.GetComponent<Fadeable>();
+            darthFader.Hide();
+        }
     }
 
     // Update is called once per frame
