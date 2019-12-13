@@ -4,6 +4,7 @@ using UnityEngine;
 // Fade functionality for a 3D object with mesh renderer.
 // Call FadeIn() or FadeOut() to trigger effect with desired fade duration in seconds.
 // To call FadeIn() the object should be made transparent first by calling Hide().
+// IMPORTANT: make sure that material of gameobject is same as fadingMaterial in Assets material folder.
 // source for basic idea of fade: https://www.youtube.com/watch?v=oNz4I0RfsEg
 // calculation for duration by josh :)
 public class Fadeable : MonoBehaviour
