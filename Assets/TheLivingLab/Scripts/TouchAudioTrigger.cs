@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using GoogleARCore;
 using System.Collections;
 
 /**
@@ -36,8 +35,11 @@ public class TouchAudioTrigger : MonoBehaviour
     // arrows that we want to enable at the end of audio
     public List<GameObject> arrows;
 
-    // holds tag of last touched audio sign
-    private string lastTouchedTag = "";
+    // makes sure that only one sound is played
+    public SoundController soundController;
+
+    // holds state of audio: Play, Paused, Stop
+    private string audioState = "Stop";
 
     // initialize renderer and audio source from object
     // hide the arrows with Fadeable.cs to be able to fade them in
@@ -67,29 +69,30 @@ public class TouchAudioTrigger : MonoBehaviour
                 // CAUTION: one time when I added new tag in editor it didn't work until I restarted unity...
                 if (raycastHit.collider.CompareTag(this.playIcon.tag))
                 {
-                    // TODO check if other is playing
-
-                    //only the touched object should be handled
-                    this.lastTouchedTag = this.playIcon.tag;
-
                     if (this.audioSource.clip != null && !this.audioSource.isPlaying)
                     {
-                        // is there an audio source and is not playing
-
-                        // play the audio and cloth with pause material
-                        this.audioSource.Play();
+                        // cloth with pause material
                         this.iconRenderer.material = this.pauseMat;
+
+                        // let sound controller play sound
+                        soundController.PlayNewSound(audioSource);
+
+                        // is there an audio source and is not playing
+                        audioState = "Play";
 
                         // start timer
                         StartCoroutine("IncreaseTimer");
                     }
                     else if (this.audioSource.clip != null && this.audioSource.isPlaying) 
                     {
-                        // is there an audio source and is playing
-
-                        // pause the video and cloth with play material
-                        this.audioSource.Pause();
+                        // cloth with play material
                         this.iconRenderer.material = this.resumeMat;
+
+                        // let sound controller pause sound
+                        soundController.PauseSound();
+
+                        // is there an audio source and is playing
+                        audioState = "Pause";
 
                         // stopp timer
                         StopCoroutine("IncreaseTimer");
@@ -98,14 +101,30 @@ public class TouchAudioTrigger : MonoBehaviour
             }
         }
 
-        if (lastTouchedTag == playIcon.tag && audioListenedTimer >= audioSource.clip.length) {
+        if (audioListenedTimer >= audioSource.clip.length && audioState == "Play") {
             // only  audio has stopped playing, fade in the correspondig arrows
+
+            // inform sound controller
+            soundController.StopSound();
+
             Debug.Log("Audio stopped for: "+ playIcon.tag);
-            audioListenedTimer = 0;
-            StopCoroutine("IncreaseTimer");
-            iconRenderer.material = playMat;
+            ResetAudio();
             fadeInArrows();
+        } else if (audioListenedTimer > 0 && !audioSource.isPlaying && 
+            soundController.currentlyPlayingAudio != audioSource && audioState == "Play")
+        {
+            // audio was playing, and another started playing
+            ResetAudio();
         }
+    }
+
+    // Resets timer and sets play material.
+    private void ResetAudio()
+    {
+        audioState = "Stop";
+        audioListenedTimer = 0;
+        StopCoroutine("IncreaseTimer");
+        iconRenderer.material = playMat;
     }
 
     // fades in selected arrows
@@ -118,7 +137,7 @@ public class TouchAudioTrigger : MonoBehaviour
         }
     }
 
-    //Coroutine that increases audilListenedTimer every second
+    //Coroutine that increases audioListenedTimer every second
     // should be stoped when audio was paused
     IEnumerator IncreaseTimer()
     {

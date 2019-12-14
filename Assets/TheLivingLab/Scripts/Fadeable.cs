@@ -8,12 +8,15 @@ using UnityEngine;
 // source for basic idea of fade: https://www.youtube.com/watch?v=oNz4I0RfsEg
 // calculation for duration by josh :)
 public class Fadeable : MonoBehaviour
-{
+{   
     // mesh renderer of object
     private MeshRenderer meshRender;
 
     // desired fade duration
     private float fadeDurationInSeconds;
+
+    // fadeIn sound
+    public AudioSource fadeInSound;
 
     // set the mesh renderer of object
     void Awake()
@@ -37,6 +40,7 @@ public class Fadeable : MonoBehaviour
         if (c.a == 0)
         {
             fadeDurationInSeconds = durationInSeconds;
+            fadeInSound.Play();
             StartCoroutine("DoTheFadeIn");
         }
     }
