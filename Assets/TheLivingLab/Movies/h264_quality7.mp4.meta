@@ -3,9 +3,6 @@ guid: fa32ef3ecf821fa4d85f3b92bcc4d8ba
 VideoClipImporter:
   externalObjects: {}
   serializedVersion: 2
-  useLegacyImporter: 0
-  quality: 0.5
-  isColorLinear: 0
   frameRange: 0
   startFrame: -1
   endFrame: -1

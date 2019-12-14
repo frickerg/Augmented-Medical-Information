@@ -14,7 +14,7 @@ EditorBuildSettings:
   - enabled: 0
     path: 
     guid: 00000000000000000000000000000000
-  - enabled: 1
+  - enabled: 0
     path: Assets/TheLivingLab/Scenes/#43-take-audio-trigger-to-next-level.unity
     guid: 73af6aa0426a04c84ab91c755c330a9a
   m_configObjects: {}
