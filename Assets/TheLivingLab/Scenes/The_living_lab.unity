@@ -370,7 +370,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh75074
+  m_Name: pb_Mesh48654
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1117,7 +1117,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-3924
+  m_Name: pb_Mesh48666
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -1413,7 +1413,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &288366657
 RectTransform:
   m_ObjectHideFlags: 0
@@ -28225,7 +28225,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-3926
+  m_Name: pb_Mesh49224
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -28424,7 +28424,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh75534
+  m_Name: pb_Mesh49010
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -30248,7 +30248,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh75842
+  m_Name: pb_Mesh49244
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -31050,14 +31050,14 @@ MonoBehaviour:
     m_Font: {fileID: 12800000, guid: 22cb062c1892ea443ad05d7b5c36cc45, type: 3}
     m_FontSize: 55
     m_FontStyle: 0
-    m_BestFit: 0
+    m_BestFit: 1
     m_MinSize: 5
     m_MaxSize: 55
     m_Alignment: 0
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "Ohne Kamera-Berechtigung kann ich leider nichts sehen. Bitte erteile mir
     die Berechtigung, auf die Kamera zuzugreifen und komm dann zur\xFCck. "
@@ -32065,7 +32065,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: -50}
+  m_AnchoredPosition: {x: 0.000061035156, y: -50}
   m_SizeDelta: {x: 1145.7, y: 276.6}
   m_Pivot: {x: 0, y: 1.0000001}
 --- !u!114 &1322572849
@@ -32097,7 +32097,7 @@ MonoBehaviour:
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
+    m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: "Bitte gew\xE4hre mir Kamera-Zugriff!"
 --- !u!222 &1322572850
@@ -59409,10 +59409,20 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3286163911610860551, guid: 324aa10f1e935474cba03cf79571f08f,
         type: 3}
+    - target: {fileID: 444572253017595637, guid: 9a277d761fb33204d9e1ad16917c75df,
+        type: 3}
+      propertyPath: m_RaycastTarget
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2169295117296356190, guid: 9a277d761fb33204d9e1ad16917c75df,
         type: 3}
       propertyPath: m_Name
       value: camerapic
+      objectReference: {fileID: 0}
+    - target: {fileID: 7322472429757041620, guid: 9a277d761fb33204d9e1ad16917c75df,
+        type: 3}
+      propertyPath: m_CullTransparentMesh
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7935862606148034396, guid: 9a277d761fb33204d9e1ad16917c75df,
         type: 3}
@@ -85090,7 +85100,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh-3930
+  m_Name: pb_Mesh49074
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -85955,7 +85965,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh75196
+  m_Name: pb_Mesh48754
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
