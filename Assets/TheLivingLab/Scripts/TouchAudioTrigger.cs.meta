@@ -3,7 +3,13 @@ guid: 00dda6a46a18f4e8082184b819b9f2fa
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - triggerArrow: {instanceID: 0}
+  - mainCamera: {instanceID: 0}
+  - playIcon: {instanceID: 0}
+  - playMat: {fileID: 2100000, guid: b940f581bf174a6419c51fbcfe46d055, type: 2}
+  - pauseMat: {fileID: 2100000, guid: e36202d50877c9441872fc67a00b21af, type: 2}
+  - resumeMat: {fileID: 2100000, guid: 3964232b39eb9e9419d3dff8a14feb42, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

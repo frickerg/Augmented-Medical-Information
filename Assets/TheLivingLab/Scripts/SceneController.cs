@@ -46,7 +46,8 @@ public class SceneController : MonoBehaviour
     // should be called at startup
     private void SetupScene()
     {
-        this.SetActiveArrows(false);
+        // no need anymore because we use Fadeable.cs
+        // this.SetActiveArrows(false);
         this.poster.SetActive(false);
 
         // children of AMIs world become child of poster so they follow anchor

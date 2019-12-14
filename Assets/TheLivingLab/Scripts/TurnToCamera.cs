@@ -10,15 +10,15 @@ public class TurnToCamera : MonoBehaviour
     public GameObject objectToTurn;
 
     // camera of the scene to look at
-    public Camera camera;
+    public Camera sceneCamera;
 
     // Update is called once per frame
     void Update()
     {
         // source: https://answers.unity.com/questions/36255/lookat-to-only-rotate-on-y-axis-how.html
-        Vector3 targetPostition = new Vector3(camera.transform.position.x,
+        Vector3 targetPostition = new Vector3(sceneCamera.transform.position.x,
                                        this.transform.position.y,
-                                       camera.transform.position.z);
+                                       sceneCamera.transform.position.z);
         this.transform.LookAt(targetPostition);
     }
 }
