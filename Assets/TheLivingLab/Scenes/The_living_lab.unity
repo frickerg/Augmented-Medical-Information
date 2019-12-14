@@ -32527,7 +32527,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   poster: {fileID: 372829227}
   informationPoints: {fileID: 2008746749}
-  arrows: {fileID: 0}
   AMIsObjects: {fileID: 771137583}
 --- !u!4 &1459560006
 Transform:
