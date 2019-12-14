@@ -63,7 +63,6 @@ public class TouchAudioTrigger : MonoBehaviour
             Ray raycast = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
             if (Physics.Raycast(raycast, out RaycastHit raycastHit))
             {
-                Debug.Log("I got touched! "+ playIcon.tag);
                 // raycast collider must be same tag as unique object collider!
                 // CAUTION: one time when I added new tag in editor it didn't work until I restarted unity...
                 if (raycastHit.collider.CompareTag(this.playIcon.tag))

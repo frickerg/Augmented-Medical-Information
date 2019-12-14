@@ -25,15 +25,20 @@ public class Fadeable : MonoBehaviour
     public void Hide()
     {
         Color c = meshRender.material.color;
-        c.a = 0f;
+        c.a = 0;
         meshRender.material.color = c;
     }
 
     // Fades in the object in x seconds.
+    // only fades when object was hidden on alpha channel
     public void FadeIn(float durationInSeconds)
     {
-        this.fadeDurationInSeconds = durationInSeconds;
-        StartCoroutine("DoTheFadeIn");
+        Color c = meshRender.material.color;
+        if (c.a == 0)
+        {
+            fadeDurationInSeconds = durationInSeconds;
+            StartCoroutine("DoTheFadeIn");
+        }
     }
 
     // Fades in the object
