@@ -6,9 +6,6 @@ using GoogleARCore;
 // Turns an object always to camera.
 public class TurnToCamera : MonoBehaviour
 {
-    // holds the information point
-    public GameObject objectToTurn;
-
     // camera of the scene to look at
     public Camera sceneCamera;
 
