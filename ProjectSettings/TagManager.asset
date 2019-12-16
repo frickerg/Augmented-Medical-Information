@@ -7,9 +7,14 @@ TagManager:
   - ManipulationSystem
   - VideoScreen
   - KASTag
-  - RADTag
   - LISTag
   - IPSTag
+  - IPSArrowInfo
+  - LISArrowInfo
+  - RADArrowInfo
+  - RISTag
+  - RADTag
+  - RISArrowInfo
   layers:
   - Default
   - TransparentFX

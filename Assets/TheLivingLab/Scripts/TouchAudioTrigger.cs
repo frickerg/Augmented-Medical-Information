@@ -41,6 +41,9 @@ public class TouchAudioTrigger : MonoBehaviour
     // holds state of audio: Play, Paused, Stop
     private string audioState = "Stop";
 
+    // holds info signs of arrows
+    public List<GameObject> infoSigns;
+
     // initialize renderer and audio source from object
     // hide the arrows with Fadeable.cs to be able to fade them in
     private void Start()
@@ -127,13 +130,17 @@ public class TouchAudioTrigger : MonoBehaviour
         iconRenderer.material = playMat;
     }
 
-    // fades in selected arrows
+    // fades in selected arrows and info icons
     private void fadeInArrows()
     {
         foreach (GameObject arrow in arrows)
         {
             Fadeable darthFader = arrow.GetComponent<Fadeable>();
             darthFader.FadeIn(FADE_DURATION);
+        }
+        foreach (GameObject info in infoSigns)
+        {
+            info.SetActive(true);
         }
     }
 
