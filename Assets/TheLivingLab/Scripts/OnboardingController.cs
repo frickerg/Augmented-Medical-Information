@@ -12,8 +12,6 @@ public class OnboardingController : MonoBehaviour
     // the overlay to say user to scan the picture
     public GameObject FitToScanOverlay;
 
-    public GameObject TestButtonInfo;
-
     // is shown at start and is removed as soon as user granted permission
     public GameObject NoPermissionOverlay;
 
@@ -70,9 +68,7 @@ public class OnboardingController : MonoBehaviour
     // scan the poster to start AMIs experience.
     private void ShowScanPosterMessage()
     {
-        // TODO exchange to our own overlay
         FitToScanOverlay.SetActive(true);
-        TestButtonInfo.SetActive(true);
         this.anchor.LookForPoster();
     }
 
