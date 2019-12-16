@@ -1,0 +1,5 @@
+Gesundheitsfachpersonen betrachten meist nur die Befunde von Bildgebenden Aufnahmen im KAS.
+
+Die Betrachtung der Bilder erfolgt direkt an einer Workstation des RIS, denn dort sind die Aufnahmen, welche im sogenannten DICOM-Format in einem PACS-System abgespeichert werden, zugänglich. Keine Panik! DICOM ist ein Datenformat wie PDF oder PPT, nur für die Speicherung und Übertragung von med. Bildmaterial optimiert. Ein PACS kann man sich wie ein intelligentes Archiv vorstellen, in welchem Bildmaterial gespeichert und von dort abgerufen werden kann.
+
+Ein DICOM-Röntgenbild besteht z.B. aus einigen Metadaten wie Aufnahme-Zeitpunkt, Patient/in, Gerät, Untersuchungsart, etc.. und schließlich den Bilddaten selbst. Eine Dicom-Datei ist somit viel mehr als ein einfaches «Foto».
