@@ -16,30 +16,21 @@ public class OverlayManager : MonoBehaviour
     // holds game object where text is displayed
     public GameObject textObject;
 
-    // holds text on overlay
-    private TextMeshPro infoText;
-
     // true when overlay is shown
     private bool isOpen = false;
 
     public void Awake()
     {
-        
         _canvasGroup = GetComponent<CanvasGroup>();
         var rect = GetComponent<RectTransform>();
         
-
         //works only horizontally
         rect.offsetMin = new Vector2(0, 0);
         rect.offsetMax = new Vector2(0, 0);
-        InformationflowOverlay.SetActive(false);
 
-    }
-
-    // assign text element from component
-    private void Start()
-    {
-        infoText = textObject.GetComponent<TextMeshPro>();
+        // make sure overlay is active, but hidden
+        InformationflowOverlay.SetActive(true);
+        hideOverlay();
     }
 
     // Update is called once per frame
@@ -48,7 +39,6 @@ public class OverlayManager : MonoBehaviour
         if (!isOpen)
         {
             _canvasGroup.blocksRaycasts = _canvasGroup.interactable = false;
-
         }
         else
         {
@@ -56,21 +46,20 @@ public class OverlayManager : MonoBehaviour
         }
     }
 
-
+    // show overlay with alpha channel
 public void showOverlay()
     {
         fetchContentfromFile();
-        InformationflowOverlay.SetActive(true);
+        _canvasGroup.alpha = 1;
         isOpen = true;
-
     }
 
+    // hide overlay with alpha channel
     public void hideOverlay()
     {
         fetchContentfromFile();
-        InformationflowOverlay.SetActive(false);
+        _canvasGroup.alpha = 0;
         isOpen = false;
-
     }
 
     public void fetchContentfromFile()
@@ -81,6 +70,7 @@ public void showOverlay()
     // set text of overlay
     public void SetText(string text)
     {
+        TextMeshProUGUI infoText = textObject.GetComponent<TextMeshProUGUI>();
         infoText.SetText(text);
     }
 }
