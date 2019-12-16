@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class OverlayManager : MonoBehaviour
 {
@@ -9,8 +10,16 @@ public class OverlayManager : MonoBehaviour
     /// </summary>
     private CanvasGroup _canvasGroup;
 
+    // holds information overlay
     public GameObject InformationflowOverlay;
 
+    // holds game object where text is displayed
+    public GameObject textObject;
+
+    // holds text on overlay
+    private TextMeshPro infoText;
+
+    // true when overlay is shown
     private bool isOpen = false;
 
     public void Awake()
@@ -26,7 +35,13 @@ public class OverlayManager : MonoBehaviour
         InformationflowOverlay.SetActive(false);
 
     }
-    
+
+    // assign text element from component
+    private void Start()
+    {
+        infoText = textObject.GetComponent<TextMeshPro>();
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -61,5 +76,11 @@ public void showOverlay()
     public void fetchContentfromFile()
     {
         // to be implemented
+    }
+
+    // set text of overlay
+    public void SetText(string text)
+    {
+        infoText.SetText(text);
     }
 }
