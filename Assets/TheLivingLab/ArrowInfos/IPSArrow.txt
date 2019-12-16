@@ -1,0 +1,48 @@
+Werden Vitaldaten am Patienten/ an der Patientin gemessen, z.B. die Körpertemperatur, werden diese Daten sofort in das KIS geschickt und dort an betroffene Systeme verteilt. So können zum Beispiel an einem KAS die elektronische Fieberkurve eines Patienten/ einer Patientin angezeigt werden, in der, wie der Name schon sagt, u.a. der Verlauf der Körpertemperatur angezeigt wird.
+
+Damit alle beteiligten Systeme den Inhalt der Nachricht richtig interpretieren, muss die Übertragung standardisiert stattfinden. Es gibt spezielle Organisationen im Gesundheitswesen, die solche Standards entwickeln, wie z.B. HL7 mit dem FHIR-Framework (Fast Healthcare Interoperability Resources). Eine FHIR-Ressource definiert ein bestimmtes Datenpaket, wie z.B. die Körpertemperatur als «Observation» und kann folgendermaßen im JSON-Format aussehen:
+
+{
+    "resourceType": "Observation",
+ 
+    "status": "final",
+ 
+    "id": "body-temperature",
+ 
+    "code": {
+        "coding": [
+ 
+            {
+                "system": "http://loinc.org",
+ 
+                "code": "8310-5",
+ 
+                "display": "Body temperature"
+ 
+            }
+ 
+        ],
+ 
+        "text": "Body temperature"
+ 
+    },
+ 
+"subject": {
+ 
+    "reference": "Patient/broennimannelisabeth"
+ 
+  },
+ 
+    "valueQuantity": {
+ 
+        "value": 36.5,
+ 
+        "unit": "C",
+ 
+        "system": "http://unitsofmeasure.org",
+ 
+        "code": "Cel"
+ 
+    }
+ 
+}
