@@ -46,6 +46,7 @@ public class TouchAudioTrigger : MonoBehaviour
 
     // initialize renderer and audio source from object
     // hide the arrows with Fadeable.cs to be able to fade them in
+    // hide info signs
     private void Start()
     {
         this.audioListenedTimer = 0;
@@ -56,6 +57,10 @@ public class TouchAudioTrigger : MonoBehaviour
         {
             Fadeable darthFader = arrow.GetComponent<Fadeable>();
             darthFader.Hide();
+        }
+        foreach (GameObject info in infoSigns)
+        {
+            info.SetActive(false);
         }
     }
 
