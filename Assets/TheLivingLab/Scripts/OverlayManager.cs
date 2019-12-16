@@ -16,6 +16,9 @@ public class OverlayManager : MonoBehaviour
     // holds game object where text is displayed
     public GameObject textObject;
 
+    // holds game object where title is displayed
+    public GameObject titleObject;
+
     // true when overlay is shown
     private bool isOpen = false;
 
@@ -72,5 +75,12 @@ public void showOverlay()
     {
         TextMeshProUGUI infoText = textObject.GetComponent<TextMeshProUGUI>();
         infoText.SetText(text);
+    }
+
+    // set title of overlay
+    public void SetTitle(string text)
+    {
+        TextMeshProUGUI infoTitle = titleObject.GetComponent<TextMeshProUGUI>();
+        infoTitle.SetText(text);
     }
 }

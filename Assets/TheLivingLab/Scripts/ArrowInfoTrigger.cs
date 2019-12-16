@@ -10,6 +10,9 @@ public class ArrowInfoTrigger : MonoBehaviour
     // text for arrow info comes from text file
     public TextAsset arrowInfo;
 
+    // text for arrow title comes from text file
+    public TextAsset infoTitle;
+
     // UI object to display information
     public OverlayManager infoManager;
 
@@ -25,6 +28,7 @@ public class ArrowInfoTrigger : MonoBehaviour
                 // raycast collider must be same tag as unique object collider!
                 if (raycastHit.collider.CompareTag(gameObject.tag))
                 {
+                    infoManager.SetTitle(infoTitle.text);
                     infoManager.SetText(arrowInfo.text);
                     infoManager.showOverlay();
                 }
