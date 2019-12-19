@@ -15,9 +15,6 @@ public class SceneController : MonoBehaviour
     // holds object with information points as children
     public GameObject informationPoints;
 
-    // holds object with arrows as children
-    public GameObject arrows;
-
     // holds all objects of AMIs world, are set as children of poster in SetupScene()
     public GameObject AMIsObjects;
 
@@ -46,8 +43,6 @@ public class SceneController : MonoBehaviour
     // should be called at startup
     private void SetupScene()
     {
-        // no need anymore because we use Fadeable.cs
-        // this.SetActiveArrows(false);
         this.poster.SetActive(false);
 
         // children of AMIs world become child of poster so they follow anchor
@@ -67,17 +62,6 @@ public class SceneController : MonoBehaviour
         foreach (Transform infoPoint in allPoints)
         {
             infoPoint.gameObject.SetActive(isActive);
-        }
-    }
-
-    // Activate/Deactivate all arrows.
-    private void SetActiveArrows(bool isActive)
-    {
-        // loop over children of arrow holder
-        Transform[] allArrows = this.arrows.GetComponentsInChildren<Transform>();
-        foreach (Transform arrow in allArrows)
-        {
-            arrow.gameObject.SetActive(isActive);
         }
     }
 }
