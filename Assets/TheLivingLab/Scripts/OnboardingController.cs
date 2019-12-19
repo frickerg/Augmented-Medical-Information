@@ -24,21 +24,17 @@ public class OnboardingController : MonoBehaviour
     // GameObject that holds all GUI-Elements for the Onboarding
     public GameObject Onboarding;
 
-    //public CanvasGroup _canvasGroup;
-
+    // overlay when user had not granted camera permission
     public GameObject CameraPermission_withoutanimation;
 
+    // ui for user to set volume
     public GameObject VolumeOverlay;
 
-
     // Start is called before the first frame update
-    //ev. in Awake-Methode
     void Start()
     {
         // check for error in beginning
         this.QuitOnConnectionErrors();
-        
-
     }
 
     void Update()
@@ -46,18 +42,18 @@ public class OnboardingController : MonoBehaviour
         if (!this.isCameraPermissionGranted)
         {
             this.CheckForCameraPermission();
-           
         }
-       
     }
 
+    // Hides the Onboarding ui.
     public void HideOnboarding()
     {
         Onboarding.SetActive(false);
         this.ShowScanPosterMessage();
-       // _canvasGroup.blocksRaycasts = _canvasGroup.interactable = true;
     }
 
+    // Quits the app.
+    // Button action when user gave no camera permission.
     public void QuitApplication()
     {
         Application.Quit();
@@ -80,6 +76,7 @@ public class OnboardingController : MonoBehaviour
         this.VolumeOverlay.SetActive(true);
     }
 
+    // Hides no camera permisison overlay
     public void DisableCameraOverlay()
     {
         this.CameraPermission_withoutanimation.SetActive(false);
@@ -108,12 +105,9 @@ public class OnboardingController : MonoBehaviour
             this.CameraPermission_withoutanimation.SetActive(true);
         } else if (Session.Status == SessionStatus.Tracking)
         {
-            
             this.CameraPermission_withoutanimation.SetActive(false);
             this.Onboarding.SetActive(true);
             this.isCameraPermissionGranted = true;
-
-            //this.Onboarding.SetActive(true);
         }
     }
 }
