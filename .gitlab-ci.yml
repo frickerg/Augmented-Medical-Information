@@ -2,6 +2,7 @@ image: gableroux/unity3d:2019.2.12f1
 
 stages:
   - build_and_test
+  - deploy
 
 # If you are looking for a place where to add 'UNITY_LICENSE_FILE' nad secrets, please visit your project's gitlab page:
 # settings > CI/CD > Variables instead
@@ -33,6 +34,7 @@ get-activation-file:
     expire_in: 10 min # Expiring this as artifacts may contain sensitive data and should not be kept public
   only:
     - develop
+    - testing
     - master
     
 
@@ -47,6 +49,7 @@ get-activation-file:
       - $(pwd)/$TEST_PLATFORM-results.xml
   only:
     - develop
+    - testing
     - master
 
 test-playmode:
@@ -70,6 +73,7 @@ test-editmode:
       - ./Builds/
   only:
     - develop
+    - testing
     - master
 
 build-android:
@@ -77,3 +81,12 @@ build-android:
   image: gableroux/unity3d:2019.2.12f1-android
   variables:
     BUILD_TARGET: Android
+
+upload-apk:
+  stage: deploy
+  script:
+    - ls
+    - tree
+  only:
+    - testing
+    - master
