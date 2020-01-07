@@ -1,4 +1,4 @@
-image: gableroux/unity3d:2019.3.0f3
+image: gableroux/unity3d:2019.2.12f1
 
 stages:
   - build_and_test
@@ -33,6 +33,7 @@ get-activation-file:
     expire_in: 10 min # Expiring this as artifacts may contain sensitive data and should not be kept public
   only:
     - develop
+    - master
     
 
 .test: &test
@@ -46,6 +47,7 @@ get-activation-file:
       - $(pwd)/$TEST_PLATFORM-results.xml
   only:
     - develop
+    - master
 
 test-playmode:
   <<: *test
@@ -68,9 +70,10 @@ test-editmode:
       - ./Builds/
   only:
     - develop
+    - master
 
 build-android:
   <<: *build
-  image: gableroux/unity3d:2019.3.0f3-android
+  image: gableroux/unity3d:2019.2.12f1-android
   variables:
     BUILD_TARGET: Android
