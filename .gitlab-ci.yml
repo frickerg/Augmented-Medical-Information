@@ -33,6 +33,7 @@ get-activation-file:
     expire_in: 10 min # Expiring this as artifacts may contain sensitive data and should not be kept public
   only:
     - develop
+    - master
     
 
 .test: &test
@@ -46,6 +47,7 @@ get-activation-file:
       - $(pwd)/$TEST_PLATFORM-results.xml
   only:
     - develop
+    - master
 
 test-playmode:
   <<: *test
@@ -68,6 +70,7 @@ test-editmode:
       - ./Builds/
   only:
     - develop
+    - master
 
 build-android:
   <<: *build
