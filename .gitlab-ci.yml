@@ -85,7 +85,7 @@ upload-apk:
   script:
     - ls
     - git status
-    - git pull
+    - git pull origin master
     - git add Builds
     - git commit -m "RELEASE - Uploaded new APK version to repository"
     - git push
