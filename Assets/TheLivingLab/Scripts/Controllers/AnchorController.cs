@@ -6,7 +6,7 @@ using GoogleARCore;
 public class AnchorController : MonoBehaviour
 {
     // temporarily stored pictures to find poster
-    private List<AugmentedImage> m_TempAugmentedImages = new List<AugmentedImage>();
+    private List<AugmentedImage> recognisedImages = new List<AugmentedImage>();
 
     // holds anchor of scanned poster
     private Anchor anchor;
@@ -24,6 +24,15 @@ public class AnchorController : MonoBehaviour
     // true when user is about to look for poster
     private bool isLookingForPoster = false;
 
+    // default scan time for poster
+    private float SCAN_TIME_DEFAULT = 4f;
+
+    // amount of seconds scanned poster
+    private int scanTimer = 0;
+
+    // true when scan timer was started
+    private bool isScanTimerStarted = false;
+
     // Update is called once per frame
     void Update()
     {
@@ -31,19 +40,22 @@ public class AnchorController : MonoBehaviour
         {
             // get all pictures from camera, normally 60 fps, TODO set this specificly
             Session.GetTrackables<AugmentedImage>(
-                m_TempAugmentedImages, TrackableQueryFilter.Updated);
+                recognisedImages, TrackableQueryFilter.Updated);
 
             // loop over pictures from camera
-            foreach (var image in m_TempAugmentedImages)
+            foreach (var image in recognisedImages)
             {
-                if (image.TrackingState == TrackingState.Tracking)
+                if (!isScanTimerStarted)
                 {
-                    // we found a picture that was in AugmentedImage database!
-                    Debug.Log("We found the picture");
+                    isScanTimerStarted = true;
+                    StartCoroutine("IncreaseScanTimer");
+                }
 
-                    // set anchor to persist the picture points around this object
-                    // (other recognised picture points are thrown away to stay performant)
+                if (image.TrackingState == TrackingState.Tracking && scanTimer >= SCAN_TIME_DEFAULT)
+                {   
+                     // set anchor to persist the picture points around this object
                     this.SetAnchor(image);
+
                     // align the rest of AMIs world according to poster
                     this.syncTheWorld(image);
                     this.isLookingForPoster = false;
@@ -57,6 +69,7 @@ public class AnchorController : MonoBehaviour
         // set poster always to anchor, because anchor can drifft, but can also be corrected by arcore device
         if (this.anchor != null)
         {
+            // TODO test this if this is necessary
             this.scene.poster.transform.position = this.anchor.transform.position;
             // we don't want to touch rotation, otherwise it will turn around...
         }
@@ -80,10 +93,12 @@ public class AnchorController : MonoBehaviour
         // side rotation we don't rotate so the poster has always same rotation
         Quaternion imageRotation = scannedImage.CenterPose.rotation;
         this.scene.poster.transform.rotation = imageRotation;
+
+        // rotates the poster because scanned image rotation is flat
         this.scene.poster.transform.Rotate(90, 0, 0);
 
-        // we rotate poster with world because we see the backside of it
-        // IMPORTANT: probably you have to adjust this when moving poster to other place
+        // rotates poster with world because we see the backside of it
+        // IMPORTANT: you have to adjust this when moving poster to other place
         this.scene.poster.transform.Rotate(0, 180, 0);
 
         this.scene.EnableAMIsWorld();
@@ -113,5 +128,16 @@ public class AnchorController : MonoBehaviour
     public void LookForPoster()
     {
         this.isLookingForPoster = true;
+    }
+
+    // Increases scan timer
+    IEnumerator IncreaseScanTimer()
+    {
+        while (true)
+        {
+            float DEFAULT_WAIT = 1;
+            yield return new WaitForSeconds(DEFAULT_WAIT);
+            scanTimer++;
+        }
     }
 }
