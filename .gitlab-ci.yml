@@ -9,11 +9,11 @@ stages:
 # CAUTION: when updating to new unity editor version you need to update licsense in gitlab ci variables
 variables:
   # ssh_deploy_key is defined under Settings > CI/CD Pipelines > Secret Variables.
-  TEMPORARY_BRANCH: "testing"
+  RELEASE_BRANCH: "master"
   GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i .ssh/id_rsa-gitlab-ci"
 
   # Clone rather than fetch so we have a completely clean workspace without
-  # any previous TEMPORARY_BRANCH left over from past CI runs.
+  # any previous RELEASE_BRANCH left over from past CI runs.
   GIT_STRATEGY: clone
 
   BUILD_NAME: AMI
@@ -90,31 +90,29 @@ build-android:
 upload-apk:
   stage: deploy
   before_script:
+    # updating ssh
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    #- mkdir -p ~/.ssh
-    #- chmod 700 ~/.ssh
-    #- ssh-keyscan gitlab.ti.bfh.ch >> ~/.ssh/known_hosts
-    #- chmod 644 ~/.ssh/known_hosts
+    # setting up git config on HEAD
     - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
     - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
+    # setting up local rsa-ssh
     - mkdir -pvm 0700 .ssh
     - echo "$ssh_deploy_key" > .ssh/id_rsa-gitlab-ci
     - chmod 0400 .ssh/id_rsa-gitlab-ci
-    - git checkout -b "$TEMPORARY_BRANCH"
+    # preparing repo to push back on self
+    - git checkout -b "$RELEASE_BRANCH"
     - git remote set-url --push origin $(perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#' <<< $CI_REPOSITORY_URL)
   script:
-      # Prepare git for pushing back to repository.
     - ls
-    - mkdir -p Release
-    - touch Release/AMI.apk
     - git status
     - git add Release/AMI.apk
-    - git commit -m "RELEASE - Uploaded new APK version $CI_COMMIT_SHA to repository"
-    - git push origin "$TEMPORARY_BRANCH:$CI_COMMIT_REF_NAME"
+    - git commit -m "RELEASE - Uploaded new APK for commit ${CI_COMMIT_SHA::8}"
+    - git push origin "$RELEASE_BRANCH:$CI_COMMIT_REF_NAME"
   only:
-    - testing
     - master
   after_script:
+    # cleanup local ssh
     - rm -Rfv .ssh
+    - echo "DONE"
