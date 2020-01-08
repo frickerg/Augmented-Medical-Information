@@ -84,7 +84,10 @@ upload-apk:
   stage: deploy
   script:
     - ls
-    - cd Builds && ls
+    - git status
+    - git add Build
+    - git commit -m "RELEASE - Uploaded new APK version to repository"
+    - git push
   only:
     - testing
     - master
