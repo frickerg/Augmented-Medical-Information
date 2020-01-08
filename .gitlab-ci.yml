@@ -9,7 +9,6 @@ stages:
 # CAUTION: when updating to new unity editor version you need to update licsense in gitlab ci variables
 variables:
   # ssh_deploy_key is defined under Settings > CI/CD Pipelines > Secret Variables.
-  RELEASE_BRANCH: "master"
   GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i .ssh/id_rsa-gitlab-ci"
 
   # Clone rather than fetch so we have a completely clean workspace without
@@ -42,8 +41,7 @@ get-activation-file:
     expire_in: 10 min # Expiring this as artifacts may contain sensitive data and should not be kept public
   only:
     - develop
-    - master
-    
+    - master    
 
 .test: &test
   stage: build_and_test
@@ -102,17 +100,17 @@ upload-apk:
     - echo "$ssh_deploy_key" > .ssh/id_rsa-gitlab-ci
     - chmod 0400 .ssh/id_rsa-gitlab-ci
     # preparing repo to push back on self
-    - git checkout -b "$RELEASE_BRANCH"
+    - git checkout -b "$CI_BUILD_REF_NAME"
     - git remote set-url --push origin $(perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#' <<< $CI_REPOSITORY_URL)
   script:
     - ls
     - git status
     - git add Release/AMI.apk
-    - git commit -m "RELEASE - Uploaded new APK for commit ${CI_COMMIT_SHA::8}"
-    - git push origin "$RELEASE_BRANCH:$CI_COMMIT_REF_NAME"
+    - git commit -m "Uploaded new APK for commit ${CI_COMMIT_SHA::8}"
+    - git push origin "$CI_BUILD_REF_NAME:$CI_COMMIT_REF_NAME"
   only:
+    - develop
     - master
   after_script:
     # cleanup local ssh
     - rm -Rfv .ssh
-    - echo "DONE"
