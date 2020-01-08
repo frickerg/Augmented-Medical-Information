@@ -49,6 +49,7 @@ public class AnchorController : MonoBehaviour
                 {
                     isScanTimerStarted = true;
                     StartCoroutine("IncreaseScanTimer");
+                    onboarding.ShowWaitingOverlay();
                 }
 
                 if (image.TrackingState == TrackingState.Tracking && scanTimer >= SCAN_TIME_DEFAULT)
@@ -59,7 +60,7 @@ public class AnchorController : MonoBehaviour
                     // align the rest of AMIs world according to poster
                     this.syncTheWorld(image);
                     this.isLookingForPoster = false;
-                    onboarding.DisableScanOverlay();
+                    onboarding.DisableScanWaitOverlay();
                 }
 
             }

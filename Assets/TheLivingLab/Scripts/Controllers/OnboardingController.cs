@@ -12,6 +12,9 @@ public class OnboardingController : MonoBehaviour
     // the overlay to say user to scan the picture
     public GameObject FitToScanOverlay;
 
+    // overlay to say user to wait while scanning
+    public GameObject FitToScanWaitOverlay;
+
     // is shown at start and is removed as soon as user granted permission
     public GameObject NoPermissionOverlay;
 
@@ -46,10 +49,11 @@ public class OnboardingController : MonoBehaviour
     }
 
     // Hides the Onboarding ui.
+    // Is called from button on last onboarding step.
     public void HideOnboarding()
     {
         Onboarding.SetActive(false);
-        this.ShowScanPosterMessage();
+        StartPosterScan();
     }
 
     // Quits the app.
@@ -59,10 +63,23 @@ public class OnboardingController : MonoBehaviour
         Application.Quit();
     }
 
+    // Shows overlay to hold still while scanning.
+    public void ShowWaitingOverlay()
+    {
+        DisableScanOverlay();
+        FitToScanWaitOverlay.SetActive(true);
+    }
+
+    // Hides hold still scan overlay.
+    public void DisableScanWaitOverlay()
+    {
+        FitToScanWaitOverlay.SetActive(false);
+    }
 
     // Shows message that user should
     // scan the poster to start AMIs experience.
-    private void ShowScanPosterMessage()
+    // Tells Anchor controller to look for poster.
+    private void StartPosterScan()
     {
         FitToScanOverlay.SetActive(true);
         this.anchor.LookForPoster();
@@ -73,7 +90,6 @@ public class OnboardingController : MonoBehaviour
     public void DisableScanOverlay()
     {
         this.FitToScanOverlay.SetActive(false);
-        this.VolumeOverlay.SetActive(true);
     }
 
     // Hides no camera permisison overlay
