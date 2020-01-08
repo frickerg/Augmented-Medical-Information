@@ -2,12 +2,20 @@ image: gableroux/unity3d:2019.2.12f1
 
 stages:
   - build_and_test
+  - deploy
 
 # If you are looking for a place where to add 'UNITY_LICENSE_FILE' nad secrets, please visit your project's gitlab page:
 # settings > CI/CD > Variables instead
 # CAUTION: when updating to new unity editor version you need to update licsense in gitlab ci variables
 variables:
-  BUILD_NAME: ExampleProjectName
+  # ssh_deploy_key is defined under Settings > CI/CD Pipelines > Secret Variables.
+  GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i .ssh/id_rsa-gitlab-ci"
+
+  # Clone rather than fetch so we have a completely clean workspace without
+  # any previous RELEASE_BRANCH left over from past CI runs.
+  GIT_STRATEGY: clone
+
+  BUILD_NAME: AMI
   UNITY_ACTIVATION_FILE: ./unity3d.alf
 
 .unity_before_script: &unity_before_script
@@ -33,8 +41,7 @@ get-activation-file:
     expire_in: 10 min # Expiring this as artifacts may contain sensitive data and should not be kept public
   only:
     - develop
-    - master
-    
+    - master    
 
 .test: &test
   stage: build_and_test
@@ -67,7 +74,7 @@ test-editmode:
     - chmod +x ./ci/build.sh && ./ci/build.sh
   artifacts:
     paths:
-      - ./Builds/
+      - ./Release
   only:
     - develop
     - master
@@ -77,3 +84,33 @@ build-android:
   image: gableroux/unity3d:2019.2.12f1-android
   variables:
     BUILD_TARGET: Android
+
+upload-apk:
+  stage: deploy
+  before_script:
+    # updating ssh
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    # setting up git config on HEAD
+    - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
+    - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
+    # setting up local rsa-ssh
+    - mkdir -pvm 0700 .ssh
+    - echo "$ssh_deploy_key" > .ssh/id_rsa-gitlab-ci
+    - chmod 0400 .ssh/id_rsa-gitlab-ci
+    # preparing repo to push back on self
+    - git checkout -b "$CI_BUILD_REF_NAME"
+    - git remote set-url --push origin $(perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#' <<< $CI_REPOSITORY_URL)
+  script:
+    - ls
+    - git status
+    - git add Release/AMI.apk
+    - git commit -m "Uploaded new APK for commit ${CI_COMMIT_SHA::8}"
+    - git push origin "$CI_BUILD_REF_NAME:$CI_COMMIT_REF_NAME"
+  only:
+    - develop
+    - master
+  after_script:
+    # cleanup local ssh
+    - rm -Rfv .ssh
