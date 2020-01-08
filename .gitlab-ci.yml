@@ -90,17 +90,15 @@ upload-apk:
     - chmod 700 ~/.ssh
     - ssh-keyscan gitlab.ti.bfh.ch >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
-
-# - ssh-add <(echo "$SSH_PRIVATE_KEY")
     - git config user.email "fricg2@bfh.ch"
     - git config user.name "fricg2"
-#- mkdir -p ~/.ssh
   script:
     - ls
     - git status
-    - git checkout master
+    - git fetch
+    - git checkout origin/master
     - git pull origin master
-    - git add Release/AMI.apk
+    - git add -f Release/AMI.apk
     - git commit -m "RELEASE - Uploaded new APK version to repository"
     - git push
   only:
