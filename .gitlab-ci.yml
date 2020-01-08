@@ -82,6 +82,15 @@ build-android:
 
 upload-apk:
   stage: deploy
+  before_script:
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$SSH_PRIVATE_KEY")
+    - git config user.email "fricg2@bfh.ch"
+    - git config user.name "fricg2"
+    - mkdir -p ~/.ssh
+    - cat gitlab-known-hosts >> ~/.ssh/known_hosts
+
   script:
     - ls
     - git status
