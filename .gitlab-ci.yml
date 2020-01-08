@@ -1,12 +1,5 @@
 image: gableroux/unity3d:2019.2.12f1
 
-before_script:
-  # if the last commit was an automatic build
-  # pipeline can be skipped
-  - COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-  - echo $COMMIT_MESSAGE
-  - if [ "${COMMIT_MESSAGE::27}" == "Uploaded new APK for commit" ];then exit;fi
-
 stages:
   - build_and_test
   - deploy
@@ -49,7 +42,7 @@ get-activation-file:
     expire_in: 10 min # Expiring this as artifacts may contain sensitive data and should not be kept public
   only:
     - develop
-    - master    
+    - master
 
 .test: &test
   stage: build_and_test
@@ -95,8 +88,7 @@ build-android:
 
 upload-apk:
   stage: deploy
-  script:
-    - ls
+  before_script:
     # updating ssh
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
     - eval $(ssh-agent -s)
@@ -111,6 +103,12 @@ upload-apk:
     # preparing repo to push back on self
     - git checkout -b "$CI_BUILD_REF_NAME"
     - git remote set-url --push origin $(perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#' <<< $CI_REPOSITORY_URL)
+  script:
+    # if the last commit was an automatic build
+    # stage can be skipped
+    - COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+    - echo $COMMIT_MESSAGE
+    - if [ "${COMMIT_MESSAGE::27}" == "Uploaded new APK for commit" ];then exit;fi
     # commit new APK
     - git status
     - git add Release/AMI.apk
@@ -120,5 +118,6 @@ upload-apk:
     - develop
     - master
   after_script:
+    - ls
     # cleanup local ssh
     - rm -Rfv .ssh
