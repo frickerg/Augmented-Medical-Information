@@ -1,6 +1,7 @@
 image: gableroux/unity3d:2019.2.12f1
 
 stages:
+  - setup
   - build_and_test
   - deploy
 
@@ -18,14 +19,6 @@ variables:
   # Unity settings
   BUILD_NAME: AMI
   UNITY_ACTIVATION_FILE: ./unity3d.alf
-
-.check_commit_before_script: &check_commit_before_script
-  before_script:
-    # if the last commit was an automatic build
-    # pipeline can be skipped
-    - COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-    - echo $COMMIT_MESSAGE
-    - if [ "${COMMIT_MESSAGE::27}" == "Uploaded new APK for commit" ];then exit;fi
 
 .unity_before_script: &unity_before_script
   before_script:
@@ -54,7 +47,6 @@ get-activation-file:
 
 .test: &test
   stage: build_and_test
-  <<: *check_commit_before_script
   <<: *unity_before_script
   <<: *cache
   script:
@@ -78,7 +70,6 @@ test-editmode:
 
 .build: &build
   stage: build_and_test
-  <<: *check_commit_before_script
   <<: *unity_before_script
   <<: *cache
   script:
@@ -96,9 +87,17 @@ build-android:
   variables:
     BUILD_TARGET: Android
 
+check-commit:
+  stage: setup
+  script:
+    # if the last commit was an automatic build
+    # pipeline can be skipped
+    - COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+    - echo $COMMIT_MESSAGE
+    - if [ "${COMMIT_MESSAGE::27}" == "Uploaded new APK for commit" ];then exit;fi
+
 upload-apk:
   stage: deploy
-  <<: *check_commit_before_script
   before_script:
     # updating ssh
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
