@@ -1,7 +1,6 @@
 image: gableroux/unity3d:2019.2.12f1
 
 stages:
-  - setup
   - build_and_test
   - deploy
 
@@ -87,15 +86,6 @@ build-android:
   variables:
     BUILD_TARGET: Android
 
-check-commit:
-  stage: setup
-  script:
-    # if the last commit was an automatic build
-    # pipeline can be skipped
-    - COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-    - echo $COMMIT_MESSAGE
-    - if [ "${COMMIT_MESSAGE::27}" == "Uploaded new APK for commit" ];then exit;fi
-
 upload-apk:
   stage: deploy
   before_script:
@@ -114,16 +104,20 @@ upload-apk:
     - git checkout -b "$CI_BUILD_REF_NAME"
     - git remote set-url --push origin $(perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#' <<< $CI_REPOSITORY_URL)
   script:
-    - ls
-    - git status
+    # if the last commit was an automatic build
+    # stage can be skipped
+    - COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+    - echo $COMMIT_MESSAGE
+    - if [ "${COMMIT_MESSAGE::27}" == "Uploaded new APK for commit" ];then exit;fi
     # commit new APK
+    - git status
     - git add Release/AMI.apk
     - git commit -m "Uploaded new APK for commit ${CI_COMMIT_SHA::8}"
     - git push origin "$CI_BUILD_REF_NAME:$CI_COMMIT_REF_NAME"
   only:
     - develop
-    - testing
     - master
   after_script:
+    - ls
     # cleanup local ssh
     - rm -Rfv .ssh
