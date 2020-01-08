@@ -8,6 +8,14 @@ stages:
 # settings > CI/CD > Variables instead
 # CAUTION: when updating to new unity editor version you need to update licsense in gitlab ci variables
 variables:
+  # ssh_deploy_key is defined under Settings > CI/CD Pipelines > Secret Variables.
+  TEMPORARY_BRANCH: "testing"
+  GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i .ssh/id_rsa-gitlab-ci"
+
+  # Clone rather than fetch so we have a completely clean workspace without
+  # any previous TEMPORARY_BRANCH left over from past CI runs.
+  GIT_STRATEGY: clone
+
   BUILD_NAME: AMI
   UNITY_ACTIVATION_FILE: ./unity3d.alf
 
@@ -71,7 +79,6 @@ test-editmode:
       - ./Release
   only:
     - develop
-    - testing
     - master
 
 build-android:
@@ -86,21 +93,28 @@ upload-apk:
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - ssh-keyscan gitlab.ti.bfh.ch >> ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
-    - git config user.email "${GITLAB_USERNAME}@bfh.ch"
-    - git config user.name "${GITLAB_USERNAME}"
+    #- mkdir -p ~/.ssh
+    #- chmod 700 ~/.ssh
+    #- ssh-keyscan gitlab.ti.bfh.ch >> ~/.ssh/known_hosts
+    #- chmod 644 ~/.ssh/known_hosts
+    - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
+    - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
+    - mkdir -pvm 0700 .ssh
+    - echo "$ssh_deploy_key" > .ssh/id_rsa-gitlab-ci
+    - chmod 0400 .ssh/id_rsa-gitlab-ci
+    - git checkout -b "$TEMPORARY_BRANCH"
+    - git remote set-url --push origin $(perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#' <<< $CI_REPOSITORY_URL)
   script:
+      # Prepare git for pushing back to repository.
     - ls
+    - mkdir -p Release
+    - touch Release/AMI.apk
     - git status
-    - git fetch --all
-    - git pull origin master
-    - git checkout master
-    - git add -f Release/AMI.apk
-    - git commit -m "RELEASE - Uploaded new APK version to repository"
-    - git push http://${GITLAB_USERNAME}:${GITLAB_ACCESS_TOKEN}@gitlab.ti.bfh.ch:fricg2/Augmented-Medical-Information.git HEAD:master
+    - git add Release/AMI.apk
+    - git commit -m "RELEASE - Uploaded new APK version $CI_COMMIT_SHA to repository"
+    - git push origin "$TEMPORARY_BRANCH:$CI_COMMIT_REF_NAME"
   only:
     - testing
     - master
+  after_script:
+    - rm -Rfv .ssh
