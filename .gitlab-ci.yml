@@ -95,9 +95,9 @@ upload-apk:
   script:
     - ls
     - git status
-    - git fetch
-    - git checkout origin/master
+    - git fetch --all
     - git pull origin master
+    - git checkout master
     - git add -f Release/AMI.apk
     - git commit -m "RELEASE - Uploaded new APK version to repository"
     - git push
