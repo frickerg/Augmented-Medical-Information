@@ -90,8 +90,8 @@ upload-apk:
     - chmod 700 ~/.ssh
     - ssh-keyscan gitlab.ti.bfh.ch >> ~/.ssh/known_hosts
     - chmod 644 ~/.ssh/known_hosts
-    - git config user.email "fricg2@bfh.ch"
-    - git config user.name "fricg2"
+    - git config user.email "${GITLAB_USERNAME}@bfh.ch"
+    - git config user.name "${GITLAB_USERNAME}"
   script:
     - ls
     - git status
@@ -100,7 +100,7 @@ upload-apk:
     - git checkout master
     - git add -f Release/AMI.apk
     - git commit -m "RELEASE - Uploaded new APK version to repository"
-    - git push
+    - git push http://${GITLAB_USERNAME}:${GITLAB_ACCESS_TOKEN}@gitlab.ti.bfh.ch:fricg2/Augmented-Medical-Information.git HEAD:master
   only:
     - testing
     - master
