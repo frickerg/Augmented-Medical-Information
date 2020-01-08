@@ -68,7 +68,7 @@ test-editmode:
     - chmod +x ./ci/build.sh && ./ci/build.sh
   artifacts:
     paths:
-      - ./Builds/Android
+      - ./Builds
   only:
     - develop
     - testing
