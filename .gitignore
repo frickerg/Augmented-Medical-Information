@@ -1,6 +1,8 @@
 /[Ll]ibrary/
 /[Tt]emp/
 /[Oo]bj/
+/[Bb]uild/
+/[Bb]uilds/
 /[Ll]ogs/
 /[Mm]emoryCaptures/
 
@@ -62,9 +64,6 @@ Assets/GoogleARCore/Examples
 # Builds
 *.apk
 *.unitypackage
-
-# Keep AMI Build from Pipeline
-!/[Bb]uilds/AMI.apk
 
 # Crashlytics generated file
 crashlytics-build.properties
