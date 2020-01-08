@@ -50,7 +50,6 @@ get-activation-file:
     expire_in: 10 min # Expiring this as artifacts may contain sensitive data and should not be kept public
   only:
     - develop
-    - testing
     - master
 
 .test: &test
@@ -65,7 +64,6 @@ get-activation-file:
       - $(pwd)/$TEST_PLATFORM-results.xml
   only:
     - develop
-    - testing
     - master
 
 test-playmode:
@@ -90,7 +88,6 @@ test-editmode:
       - ./Release
   only:
     - develop
-    - testing
     - master
 
 build-android:
@@ -118,7 +115,7 @@ upload-apk:
     - git checkout -b "$CI_BUILD_REF_NAME"
     - git remote set-url --push origin $(perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#' <<< $CI_REPOSITORY_URL)
   script:
-    - ls
+    - ls && ls
     - git status
     # commit new APK
     - git add Release/AMI.apk
