@@ -83,8 +83,8 @@ build-android:
 upload-apk:
   stage: deploy
   script:
-    - cd ./Builds/
     - ls
+    - cd Builds && ls
   only:
     - testing
     - master
