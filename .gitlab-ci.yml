@@ -8,7 +8,7 @@ stages:
 # settings > CI/CD > Variables instead
 # CAUTION: when updating to new unity editor version you need to update licsense in gitlab ci variables
 variables:
-  BUILD_NAME: ExampleProjectName
+  BUILD_NAME: AMI
   UNITY_ACTIVATION_FILE: ./unity3d.alf
 
 .unity_before_script: &unity_before_script
@@ -68,7 +68,7 @@ test-editmode:
     - chmod +x ./ci/build.sh && ./ci/build.sh
   artifacts:
     paths:
-      - ./Builds/
+      - ./Builds/Android
   only:
     - develop
     - testing
@@ -83,8 +83,8 @@ build-android:
 upload-apk:
   stage: deploy
   script:
+    - cd ./Builds/
     - ls
-    - tree
   only:
     - testing
     - master
