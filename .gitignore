@@ -64,7 +64,7 @@ Assets/GoogleARCore/Examples
 *.unitypackage
 
 # Keep AMI Build from Pipeline
-!/[Bb]uild/AMI.apk
+!/[Bb]uilds/AMI.apk
 
 # Crashlytics generated file
 crashlytics-build.properties

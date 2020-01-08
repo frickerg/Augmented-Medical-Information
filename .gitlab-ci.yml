@@ -86,7 +86,7 @@ upload-apk:
     - ls
     - git status
     - git pull
-    - git add Build
+    - git add Builds
     - git commit -m "RELEASE - Uploaded new APK version to repository"
     - git push
   only:
