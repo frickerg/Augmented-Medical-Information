@@ -1,12 +1,5 @@
 image: gableroux/unity3d:2019.2.12f1
 
-before_script:
-  # if the last commit was an automatic build
-  # pipeline can be skipped
-  - COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-  - echo $COMMIT_MESSAGE
-  - if [ "${COMMIT_MESSAGE::27}" == "Uploaded new APK for commit" ];then exit;fi
-
 stages:
   - build_and_test
   - deploy
@@ -25,6 +18,14 @@ variables:
   # Unity settings
   BUILD_NAME: AMI
   UNITY_ACTIVATION_FILE: ./unity3d.alf
+
+.check_commit_before_script: &check_commit_before_script
+  before_script:
+    # if the last commit was an automatic build
+    # pipeline can be skipped
+    - COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+    - echo $COMMIT_MESSAGE
+    - if [ "${COMMIT_MESSAGE::27}" == "Uploaded new APK for commit" ];then exit;fi
 
 .unity_before_script: &unity_before_script
   before_script:
@@ -49,10 +50,12 @@ get-activation-file:
     expire_in: 10 min # Expiring this as artifacts may contain sensitive data and should not be kept public
   only:
     - develop
-    - master    
+    - testing
+    - master
 
 .test: &test
   stage: build_and_test
+  <<: *check_commit_before_script
   <<: *unity_before_script
   <<: *cache
   script:
@@ -62,6 +65,7 @@ get-activation-file:
       - $(pwd)/$TEST_PLATFORM-results.xml
   only:
     - develop
+    - testing
     - master
 
 test-playmode:
@@ -76,6 +80,7 @@ test-editmode:
 
 .build: &build
   stage: build_and_test
+  <<: *check_commit_before_script
   <<: *unity_before_script
   <<: *cache
   script:
@@ -85,6 +90,7 @@ test-editmode:
       - ./Release
   only:
     - develop
+    - testing
     - master
 
 build-android:
@@ -95,8 +101,8 @@ build-android:
 
 upload-apk:
   stage: deploy
-  script:
-    - ls
+  <<: *check_commit_before_script
+  before_script:
     # updating ssh
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
     - eval $(ssh-agent -s)
@@ -111,13 +117,16 @@ upload-apk:
     # preparing repo to push back on self
     - git checkout -b "$CI_BUILD_REF_NAME"
     - git remote set-url --push origin $(perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#' <<< $CI_REPOSITORY_URL)
-    # commit new APK
+  script:
+    - ls
     - git status
+    # commit new APK
     - git add Release/AMI.apk
     - git commit -m "Uploaded new APK for commit ${CI_COMMIT_SHA::8}"
     - git push origin "$CI_BUILD_REF_NAME:$CI_COMMIT_REF_NAME"
   only:
     - develop
+    - testing
     - master
   after_script:
     # cleanup local ssh
