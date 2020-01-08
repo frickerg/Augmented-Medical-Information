@@ -114,7 +114,7 @@ upload-apk:
     - git checkout -b "$CI_BUILD_REF_NAME"
     - git remote set-url --push origin $(perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#' <<< $CI_REPOSITORY_URL)
   script:
-    - ls && ls
+    - ls
     - git status
     # commit new APK
     - git add Release/AMI.apk
