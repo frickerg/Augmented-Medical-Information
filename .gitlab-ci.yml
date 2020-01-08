@@ -89,7 +89,6 @@ upload-apk:
     - git config user.email "fricg2@bfh.ch"
     - git config user.name "fricg2"
     - mkdir -p ~/.ssh
-    - cat gitlab-known-hosts >> ~/.ssh/known_hosts
 
   script:
     - ls
