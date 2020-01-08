@@ -89,9 +89,10 @@ upload-apk:
     - git config user.email "fricg2@bfh.ch"
     - git config user.name "fricg2"
     - mkdir -p ~/.ssh
-    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
-
   script:
+    - ssh-keygen -t rsa -b 2048
+    - cat ~/.ssh/id_rsa.pub
+    - ssh-add
     - ls
     - git status
     - git checkout master
