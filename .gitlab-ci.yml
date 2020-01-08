@@ -22,6 +22,7 @@ variables:
   # any previous RELEASE_BRANCH left over from past CI runs.
   GIT_STRATEGY: clone
 
+  # Unity settings
   BUILD_NAME: AMI
   UNITY_ACTIVATION_FILE: ./unity3d.alf
 
@@ -94,7 +95,8 @@ build-android:
 
 upload-apk:
   stage: deploy
-  before_script:
+  script:
+    - ls
     # updating ssh
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
     - eval $(ssh-agent -s)
@@ -109,15 +111,13 @@ upload-apk:
     # preparing repo to push back on self
     - git checkout -b "$CI_BUILD_REF_NAME"
     - git remote set-url --push origin $(perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#' <<< $CI_REPOSITORY_URL)
-  script:
-    - ls
+    # commit new APK
     - git status
     - git add Release/AMI.apk
     - git commit -m "Uploaded new APK for commit ${CI_COMMIT_SHA::8}"
     - git push origin "$CI_BUILD_REF_NAME:$CI_COMMIT_REF_NAME"
   only:
     - develop
-    - testing
     - master
   after_script:
     # cleanup local ssh
