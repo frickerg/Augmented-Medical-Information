@@ -106,10 +106,11 @@ upload-apk:
     - ls
     - COMMIT_MESSAGE=$(git log -1 --pretty=%B)
     - echo $COMMIT_MESSAGE
-    #- git status
-    #- git add Release/AMI.apk
-    #- git commit -m "Uploaded new APK for commit ${CI_COMMIT_SHA::8}"
-    #- git push origin "$CI_BUILD_REF_NAME:$CI_COMMIT_REF_NAME"
+    - if [ "${COMMIT_MESSAGE::27}" == "Uploaded new APK for commit" ];then exit;fi
+    - git status
+    - git add Release/AMI.apk
+    - git commit -m "Uploaded new APK for commit ${CI_COMMIT_SHA::8}"
+    - git push origin "$CI_BUILD_REF_NAME:$CI_COMMIT_REF_NAME"
   only:
     - develop
     - testing
