@@ -44,6 +44,7 @@ get-activation-file:
     - develop
     - master
 
+
 .test: &test
   stage: build_and_test
   <<: *unity_before_script
@@ -56,16 +57,6 @@ get-activation-file:
   only:
     - develop
     - master
-
-test-playmode:
-  <<: *test
-  variables:
-    TEST_PLATFORM: playmode
-
-test-editmode:
-  <<: *test
-  variables:
-    TEST_PLATFORM: editmode
 
 .build: &build
   stage: build_and_test
