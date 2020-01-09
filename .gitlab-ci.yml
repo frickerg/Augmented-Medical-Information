@@ -11,7 +11,7 @@ stages:
 variables:
   # Define commit message for new APKs
   # APK_COMMIT_MESSAGE: "Uploaded new APK for commit"
-  APK_COMMIT_MESSAGE: "Testing to"
+  APK_COMMIT_MESSAGE: "Uploaded new APK for commit"
 
   # ssh_deploy_key is defined under Settings > CI/CD Pipelines > Secret Variables.
   GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i .ssh/id_rsa-gitlab-ci"
@@ -100,7 +100,6 @@ upload-apk:
     - git push origin "$CI_BUILD_REF_NAME:$CI_COMMIT_REF_NAME"
   only:
     - develop
-    - testing
     - master
   after_script:
     - ls
