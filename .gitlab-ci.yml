@@ -5,17 +5,13 @@ stages:
   - build
   - deploy
 
-before_script:
-  # check commit
-  - eval $CHECK_COMMIT
-
 # If you are looking for a place where to add 'UNITY_LICENSE_FILE' nad secrets, please visit your project's gitlab page:
 # settings > CI/CD > Variables instead
 # CAUTION: when updating to new unity editor version you need to update licsense in gitlab ci variables
 variables:
   # Define commit message for new APKs
   # APK_COMMIT_MESSAGE: "Uploaded new APK for commit"
-  APK_COMMIT_MESSAGE: "Pipeline test"
+  APK_COMMIT_MESSAGE: "Testing"
 
   # ssh_deploy_key is defined under Settings > CI/CD Pipelines > Secret Variables.
   GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i .ssh/id_rsa-gitlab-ci"
@@ -28,12 +24,18 @@ variables:
   BUILD_NAME: AMI
   UNITY_ACTIVATION_FILE: ./unity3d.alf
 
-  # Flag to skip jobs if 
+  # Store commit message
+  COMMIT_MESSAGE: eval "$(git log -1 --pretty=%B)"
+
+  # Flag to skip jobs if commit message was auto-generated 
   CHECK_COMMIT:
-    "if [ \"${COMMIT_MESSAGE::${#APK_COMMIT_MESSAGE} }\" == \"${APK_COMMIT_MESSAGE}\" ];then exit;fi"
+    "if [ \"${COMMIT_MESSAGE::${#APK_COMMIT_MESSAGE}}\" == \"${APK_COMMIT_MESSAGE}\" ];then exit;else echo \"did not work\";fi"
 
 .unity_before_script: &unity_before_script
   before_script:
+    # check commit
+    - eval $CHECK_COMMIT
+    # execute unity script
     - chmod +x ./ci/before_script.sh && ./ci/before_script.sh
 
 .cache: &cache
@@ -42,9 +44,13 @@ variables:
     paths:
       - Library/
 
-check_commit:
+check-commit:
   stage: setup
-  before_script:
+  script:
+    - echo ${COMMIT_MESSAGE::${#APK_COMMIT_MESSAGE}}
+    - echo "${COMMIT_MESSAGE::${#APK_COMMIT_MESSAGE}} == ${APK_COMMIT_MESSAGE}" 
+    # check commit
+    - eval $CHECK_COMMIT
     # update ssh
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
     - eval $(ssh-agent -s)
@@ -59,11 +65,6 @@ check_commit:
     # preparing repo to push back on self
     - git checkout -b "$CI_BUILD_REF_NAME"
     - git remote set-url --push origin $(perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#' <<< $CI_REPOSITORY_URL)
-  script:
-    # if the last commit was an automatic build
-    # stage can be skipped
-    - COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-    - echo $COMMIT_MESSAGE
   only:
     - develop
     - testing
@@ -89,13 +90,14 @@ get-activation-file:
   <<: *unity_before_script
   <<: *cache
   script:
+    # check commit
+    - eval $CHECK_COMMIT
     - chmod +x ./ci/build.sh && ./ci/build.sh
   artifacts:
     paths:
       - ./Release
   only:
     - develop
-    - testing
     - master
 
 build-android:
@@ -106,7 +108,12 @@ build-android:
 
 upload-apk:
   stage: deploy
+  before_script:
+    # check commit
+    - eval $CHECK_COMMIT
   script:
+    # double check for testing
+    - eval $CHECK_COMMIT
     # commit new APK
     - git status
     - git add Release/AMI.apk
