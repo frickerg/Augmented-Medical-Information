@@ -1,13 +1,18 @@
 image: gableroux/unity3d:2019.2.17f1
 
 stages:
-  - build_and_test
+  - setup
+  - build
   - deploy
 
 # If you are looking for a place where to add 'UNITY_LICENSE_FILE' nad secrets, please visit your project's gitlab page:
 # settings > CI/CD > Variables instead
 # CAUTION: when updating to new unity editor version you need to update licsense in gitlab ci variables
 variables:
+  # Define commit message for new APKs
+  # APK_COMMIT_MESSAGE: "Uploaded new APK for commit"
+  APK_COMMIT_MESSAGE: "Uploaded new APK for commit"
+
   # ssh_deploy_key is defined under Settings > CI/CD Pipelines > Secret Variables.
   GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i .ssh/id_rsa-gitlab-ci"
 
@@ -21,6 +26,10 @@ variables:
 
 .unity_before_script: &unity_before_script
   before_script:
+    # check commit
+    - COMMIT_MESSAGE="$(git log -1 --pretty=%B)"
+    - if [ "${COMMIT_MESSAGE::${#APK_COMMIT_MESSAGE}}" == "${APK_COMMIT_MESSAGE}" ];then exit;fi
+    # execute unity script
     - chmod +x ./ci/before_script.sh && ./ci/before_script.sh
 
 .cache: &cache
@@ -33,7 +42,7 @@ variables:
 # you may need to follow activation steps from documentation
 get-activation-file:
   when: manual
-  stage: build_and_test
+  stage: build
   script:
     - chmod +x ./ci/get_activation_file.sh && ./ci/get_activation_file.sh
   artifacts:
@@ -44,22 +53,8 @@ get-activation-file:
     - develop
     - master
 
-
-.test: &test
-  stage: build_and_test
-  <<: *unity_before_script
-  <<: *cache
-  script:
-    - chmod +x ./ci/test.sh && ./ci/test.sh
-  artifacts:
-    paths:
-      - $(pwd)/$TEST_PLATFORM-results.xml
-  only:
-    - develop
-    - master
-
 .build: &build
-  stage: build_and_test
+  stage: build
   <<: *unity_before_script
   <<: *cache
   script:
@@ -80,7 +75,7 @@ build-android:
 upload-apk:
   stage: deploy
   before_script:
-    # updating ssh
+    # update ssh
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
@@ -95,15 +90,13 @@ upload-apk:
     - git checkout -b "$CI_BUILD_REF_NAME"
     - git remote set-url --push origin $(perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#' <<< $CI_REPOSITORY_URL)
   script:
-    # if the last commit was an automatic build
-    # stage can be skipped
-    - COMMIT_MESSAGE=$(git log -1 --pretty=%B)
-    - echo $COMMIT_MESSAGE
-    - if [ "${COMMIT_MESSAGE::27}" == "Uploaded new APK for commit" ];then exit;fi
+    # check commit
+    - COMMIT_MESSAGE="$(git log -1 --pretty=%B)"
+    - if [ "${COMMIT_MESSAGE::${#APK_COMMIT_MESSAGE}}" == "${APK_COMMIT_MESSAGE}" ];then exit;fi
     # commit new APK
     - git status
     - git add Release/AMI.apk
-    - git commit -m "Uploaded new APK for commit ${CI_COMMIT_SHA::8}"
+    - git commit -m "${APK_COMMIT_MESSAGE} ${CI_COMMIT_SHA::8}"
     - git push origin "$CI_BUILD_REF_NAME:$CI_COMMIT_REF_NAME"
   only:
     - develop
