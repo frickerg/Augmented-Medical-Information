@@ -33,34 +33,36 @@ public class AnchorController : MonoBehaviour
     // true when scan timer was started
     private bool isScanTimerStarted = false;
 
+    private AugmentedImage scannedImage;
+
     // Update is called once per frame
     void Update()
     {
-        if (this.isLookingForPoster)
+        if (this.isLookingForPoster && Session.Status == SessionStatus.Tracking)
         {
-            // get all pictures from camera, normally 60 fps, TODO set this specificly
             Session.GetTrackables<AugmentedImage>(
                 recognisedImages, TrackableQueryFilter.Updated);
 
             // loop over pictures from camera
             foreach (var image in recognisedImages)
             {
+                /*
                 if (!isScanTimerStarted)
                 {
                     isScanTimerStarted = true;
                     StartCoroutine("IncreaseScanTimer");
                     onboarding.ShowWaitingOverlay();
-                }
+                }*/
 
-                if (image.TrackingState == TrackingState.Tracking && scanTimer >= SCAN_TIME_DEFAULT)
-                {   
-                     // set anchor to persist the picture points around this object
-                    this.SetAnchor(image);
-
+                if (image.TrackingState == TrackingState.Tracking)
+                {
+                    scannedImage = image;
+                    // set anchor to persist the picture points around this object
+                    this.SetAnchor();
                     // align the rest of AMIs world according to poster
-                    this.syncTheWorld(image);
+                    this.syncTheWorld();
                     this.isLookingForPoster = false;
-                    onboarding.DisableScanWaitOverlay();
+                    onboarding.DisableScanOverlay();
                 }
 
             }
@@ -68,19 +70,18 @@ public class AnchorController : MonoBehaviour
         //this.LogAnchorDrift();
 
         // set poster always to anchor, because anchor can drifft, but can also be corrected by arcore device
-        if (this.anchor != null)
+        if (anchor != null)
         {
-            // TODO test this if this is necessary
-            this.scene.poster.transform.position = this.anchor.transform.position;
-            // we don't want to touch rotation, otherwise it will turn around...
+            //scene.poster.transform.position = this.anchor.transform.position;
+            //scene.poster.transform.rotation = this.anchor.transform.rotation;
         }
     }
 
     // Set anchor to center of scanned image.
-    public void SetAnchor(AugmentedImage image)
+    public void SetAnchor()
     {
         // create anchor where image was scanned
-        this.anchor = image.CreateAnchor(image.CenterPose);
+        this.anchor = scannedImage.CreateAnchor(scannedImage.CenterPose);
 
         // keep the last position and rotation
         this.lastAnchoredPosition = anchor.transform.position;
@@ -88,8 +89,10 @@ public class AnchorController : MonoBehaviour
     }
 
     // Position AMIs world according to poster.
-    private void syncTheWorld(AugmentedImage scannedImage)
+    private void syncTheWorld()
     {
+        scene.poster.transform.position = scannedImage.CenterPose.position;
+
         // we rotate AMIs world with 90 degrees "backwards", so it is flat at the wall
         // side rotation we don't rotate so the poster has always same rotation
         Quaternion imageRotation = scannedImage.CenterPose.rotation;

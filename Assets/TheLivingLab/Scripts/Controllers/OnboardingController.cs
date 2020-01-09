@@ -33,6 +33,12 @@ public class OnboardingController : MonoBehaviour
     // ui for user to set volume
     public GameObject VolumeOverlay;
 
+    // holds Google ARCore camera to activate when scanning
+    public GameObject ARCoreCamera;
+
+    // holds camera active on startup
+    public GameObject StartingCamera;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -74,6 +80,13 @@ public class OnboardingController : MonoBehaviour
     public void DisableScanWaitOverlay()
     {
         FitToScanWaitOverlay.SetActive(false);
+    }
+
+    // method to enable camera and start ARCore Session 
+    public void StartRoomScan()
+    {
+        StartingCamera.SetActive(false);
+        ARCoreCamera.SetActive(true);
     }
 
     // Shows message that user should
@@ -122,7 +135,6 @@ public class OnboardingController : MonoBehaviour
         } else if (Session.Status == SessionStatus.Tracking)
         {
             this.CameraPermission_withoutanimation.SetActive(false);
-            this.Onboarding.SetActive(true);
             this.isCameraPermissionGranted = true;
         }
     }
