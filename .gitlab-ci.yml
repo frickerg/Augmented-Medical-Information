@@ -1,7 +1,7 @@
 image: gableroux/unity3d:2019.2.17f1
 
 stages:
-  - build_and_test
+  - build
   - deploy
 
 # If you are looking for a place where to add 'UNITY_LICENSE_FILE' nad secrets, please visit your project's gitlab page:
@@ -19,6 +19,14 @@ variables:
   BUILD_NAME: AMI
   UNITY_ACTIVATION_FILE: ./unity3d.alf
 
+  # Define commit message for new APKs
+  # APK_COMMIT_MESSAGE: "Uploaded new APK for commit"
+  APK_COMMIT_MESSAGE: "Pipeline test"
+
+.before_commit: &before_commit
+  before_script:
+    - chmod +x ./ci/before_commit.sh && ./ci/before_commit.sh
+
 .unity_before_script: &unity_before_script
   before_script:
     - chmod +x ./ci/before_script.sh && ./ci/before_script.sh
@@ -33,7 +41,7 @@ variables:
 # you may need to follow activation steps from documentation
 get-activation-file:
   when: manual
-  stage: build_and_test
+  stage: build
   script:
     - chmod +x ./ci/get_activation_file.sh && ./ci/get_activation_file.sh
   artifacts:
@@ -44,25 +52,13 @@ get-activation-file:
     - develop
     - master
 
-
-.test: &test
-  stage: build_and_test
-  <<: *unity_before_script
-  <<: *cache
-  script:
-    - chmod +x ./ci/test.sh && ./ci/test.sh
-  artifacts:
-    paths:
-      - $(pwd)/$TEST_PLATFORM-results.xml
-  only:
-    - develop
-    - master
-
 .build: &build
-  stage: build_and_test
+  stage: build
+  <<: *before_commit
   <<: *unity_before_script
   <<: *cache
   script:
+    - echo "XXX - this is build job"
     - chmod +x ./ci/build.sh && ./ci/build.sh
   artifacts:
     paths:
@@ -77,8 +73,9 @@ build-android:
   variables:
     BUILD_TARGET: Android
 
-upload-apk:
+.upload-apk: &upload-apk
   stage: deploy
+  <<: *before_commit
   before_script:
     # updating ssh
     - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
@@ -99,14 +96,15 @@ upload-apk:
     # stage can be skipped
     - COMMIT_MESSAGE=$(git log -1 --pretty=%B)
     - echo $COMMIT_MESSAGE
-    - if [ "${COMMIT_MESSAGE::27}" == "Uploaded new APK for commit" ];then exit;fi
+    - if [ "${COMMIT_MESSAGE::${#APK_COMMIT_MESSAGE} }" == "${APK_COMMIT_MESSAGE}" ];then exit;fi
     # commit new APK
     - git status
     - git add Release/AMI.apk
-    - git commit -m "Uploaded new APK for commit ${CI_COMMIT_SHA::8}"
+    - git commit -m "${APK_COMMIT_MESSAGE} ${CI_COMMIT_SHA::8}"
     - git push origin "$CI_BUILD_REF_NAME:$CI_COMMIT_REF_NAME"
   only:
     - develop
+    - testing
     - master
   after_script:
     - ls
