@@ -34,6 +34,14 @@ public class OverlayManager : MonoBehaviour
         // make sure overlay is active, but hidden
         InformationflowOverlay.SetActive(true);
         hideOverlay();
+        //Test();
+    }
+
+    void Test()
+    {
+        SetText("Title");
+        SetTitle("Text");
+        showOverlay();
     }
 
     // Update is called once per frame
