@@ -12,6 +12,9 @@ public class OnboardingController : MonoBehaviour
     // the overlay to say user to scan the picture
     public GameObject FitToScanOverlay;
 
+    // overlay to say user to wait while scanning
+    public GameObject FitToScanWaitOverlay;
+
     // is shown at start and is removed as soon as user granted permission
     public GameObject NoPermissionOverlay;
 
@@ -30,6 +33,12 @@ public class OnboardingController : MonoBehaviour
     // ui for user to set volume
     public GameObject VolumeOverlay;
 
+    // holds Google ARCore camera to activate when scanning
+    public GameObject ARCoreCamera;
+
+    // holds camera active on startup
+    public GameObject StartingCamera;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -46,10 +55,11 @@ public class OnboardingController : MonoBehaviour
     }
 
     // Hides the Onboarding ui.
+    // Is called from button on last onboarding step.
     public void HideOnboarding()
     {
         Onboarding.SetActive(false);
-        this.ShowScanPosterMessage();
+        StartPosterScan();
     }
 
     // Quits the app.
@@ -59,10 +69,30 @@ public class OnboardingController : MonoBehaviour
         Application.Quit();
     }
 
+    // Shows overlay to hold still while scanning.
+    public void ShowWaitingOverlay()
+    {
+        DisableScanOverlay();
+        FitToScanWaitOverlay.SetActive(true);
+    }
+
+    // Hides hold still scan overlay.
+    public void DisableScanWaitOverlay()
+    {
+        FitToScanWaitOverlay.SetActive(false);
+    }
+
+    // method to enable camera and start ARCore Session 
+    public void StartRoomScan()
+    {
+        StartingCamera.SetActive(false);
+        ARCoreCamera.SetActive(true);
+    }
 
     // Shows message that user should
     // scan the poster to start AMIs experience.
-    private void ShowScanPosterMessage()
+    // Tells Anchor controller to look for poster.
+    private void StartPosterScan()
     {
         FitToScanOverlay.SetActive(true);
         this.anchor.LookForPoster();
@@ -73,7 +103,6 @@ public class OnboardingController : MonoBehaviour
     public void DisableScanOverlay()
     {
         this.FitToScanOverlay.SetActive(false);
-        this.VolumeOverlay.SetActive(true);
     }
 
     // Hides no camera permisison overlay
@@ -106,7 +135,6 @@ public class OnboardingController : MonoBehaviour
         } else if (Session.Status == SessionStatus.Tracking)
         {
             this.CameraPermission_withoutanimation.SetActive(false);
-            this.Onboarding.SetActive(true);
             this.isCameraPermissionGranted = true;
         }
     }
