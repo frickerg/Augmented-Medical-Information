@@ -58,9 +58,9 @@ public class AnchorController : MonoBehaviour
                 {
                     scannedImage = image;
                     // set anchor to persist the picture points around this object
-                    this.SetAnchor();
+                    SetAnchor();
                     // align the rest of AMIs world according to poster
-                    this.syncTheWorld();
+                    syncTheWorld();
                     this.isLookingForPoster = false;
                     onboarding.DisableScanOverlay();
                 }
@@ -72,7 +72,7 @@ public class AnchorController : MonoBehaviour
         // set poster always to anchor, because anchor can drifft, but can also be corrected by arcore device
         if (anchor != null)
         {
-            //scene.poster.transform.position = this.anchor.transform.position;
+            scene.poster.transform.position = this.anchor.transform.position;
             //scene.poster.transform.rotation = this.anchor.transform.rotation;
         }
     }
