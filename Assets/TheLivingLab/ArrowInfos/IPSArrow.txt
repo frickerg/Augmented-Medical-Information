@@ -4,45 +4,25 @@ Damit alle beteiligten Systeme den Inhalt der Nachricht richtig interpretieren, 
 
 {
     "resourceType": "Observation",
- 
     "status": "final",
- 
     "id": "body-temperature",
- 
     "code": {
         "coding": [
- 
             {
                 "system": "http://loinc.org",
- 
                 "code": "8310-5",
- 
                 "display": "Body temperature"
- 
             }
- 
         ],
- 
         "text": "Body temperature"
- 
     },
- 
 "subject": {
- 
     "reference": "Patient/broennimannelisabeth"
- 
   },
- 
     "valueQuantity": {
- 
         "value": 36.5,
- 
         "unit": "C",
- 
         "system": "http://unitsofmeasure.org",
- 
         "code": "Cel"
- 
     }
- 
 }
