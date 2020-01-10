@@ -21,14 +21,11 @@ public class AnchorController : MonoBehaviour
     // access to scene controller methods
     public SceneController scene;
 
-    // true when user is about to look for poster
-    private bool isLookingForPoster = false;
-
     // default scan time for poster
     private float SCAN_TIME_DEFAULT = 4f;
 
     // amount of seconds scanned poster
-    private int scanTimer = 0;
+    private int scanTimePast = 0;
 
     // true when scan timer was started
     private bool isScanTimerStarted = false;
@@ -38,8 +35,10 @@ public class AnchorController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (this.isLookingForPoster && Session.Status == SessionStatus.Tracking)
+        if (Session.Status == SessionStatus.Tracking)
         {
+            // only start 
+
             Session.GetTrackables<AugmentedImage>(
                 recognisedImages, TrackableQueryFilter.Updated);
 
@@ -61,7 +60,6 @@ public class AnchorController : MonoBehaviour
                     SetAnchor();
                     // align the rest of AMIs world according to poster
                     syncTheWorld();
-                    this.isLookingForPoster = false;
                     onboarding.DisableScanOverlay();
                 }
 
@@ -128,12 +126,6 @@ public class AnchorController : MonoBehaviour
         }
     }
 
-    // Enables AnchorController to look for poster.
-    public void LookForPoster()
-    {
-        this.isLookingForPoster = true;
-    }
-
     // Increases scan timer
     IEnumerator IncreaseScanTimer()
     {
@@ -141,7 +133,7 @@ public class AnchorController : MonoBehaviour
         {
             float DEFAULT_WAIT = 1;
             yield return new WaitForSeconds(DEFAULT_WAIT);
-            scanTimer++;
+            scanTimePast++;
         }
     }
 }

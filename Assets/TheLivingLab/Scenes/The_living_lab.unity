@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311912, g: 0.3807398, b: 0.3587271, a: 1}
+  m_IndirectSpecularColor: {r: 0.37311947, g: 0.38074, b: 0.35872698, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -31394,12 +31394,12 @@ MonoBehaviour:
   FitToScanOverlay: {fileID: 1916192903}
   FitToScanWaitOverlay: {fileID: 1264212848}
   NoPermissionOverlay: {fileID: 521266106}
-  anchor: {fileID: 19345889}
   Onboarding: {fileID: 1575595692}
   CameraPermission_withoutanimation: {fileID: 288366656}
   VolumeOverlay: {fileID: 768138280}
   ARCoreCamera: {fileID: 272142486}
   StartingCamera: {fileID: 1067904725}
+  anchorController: {fileID: 19345889}
 --- !u!1 &978151068
 GameObject:
   m_ObjectHideFlags: 0
@@ -33041,7 +33041,7 @@ MonoBehaviour:
   m_enableWordWrapping: 1
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
-  m_firstOverflowCharacterIndex: 0
+  m_firstOverflowCharacterIndex: -1
   m_linkedTextComponent: {fileID: 0}
   m_isLinkedTextComponent: 0
   m_isTextTruncated: 0
@@ -33177,7 +33177,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 616593415}
   m_HandleRect: {fileID: 616593414}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
