@@ -30,49 +30,112 @@ public class AnchorController : MonoBehaviour
     // true when scan timer was started
     private bool isScanTimerStarted = false;
 
+    // holds scanned images
     private AugmentedImage scannedImage;
+
+    // true when poster is scanned first time, need to know for next scans that it doesn't show hold still
+    private bool isPosterScannedFirstTime = true;
+
+    // holds scanned images that are used to calculate new position
+    private List<AugmentedImage> tempFoundPosterImage;
+
+    private void Start()
+    {
+        tempFoundPosterImage = new List<AugmentedImage>();
+    }
 
     // Update is called once per frame
     void Update()
     {
         if (Session.Status == SessionStatus.Tracking)
         {
-            // only start 
-
+            // get image part that contain scanned poster
             Session.GetTrackables<AugmentedImage>(
                 recognisedImages, TrackableQueryFilter.Updated);
 
-            // loop over pictures from camera
-            foreach (var image in recognisedImages)
+            if (recognisedImages.Count > 0)
             {
-                /*
-                if (!isScanTimerStarted)
-                {
-                    isScanTimerStarted = true;
-                    StartCoroutine("IncreaseScanTimer");
-                    onboarding.ShowWaitingOverlay();
-                }*/
+                // the poster was scanned!
 
-                if (image.TrackingState == TrackingState.Tracking)
+                if (isPosterScannedFirstTime)
                 {
-                    scannedImage = image;
-                    // set anchor to persist the picture points around this object
-                    SetAnchor();
-                    // align the rest of AMIs world according to poster
-                    syncTheWorld();
-                    onboarding.DisableScanOverlay();
+                    // only show waiting at first scan
+                    isPosterScannedFirstTime = false;
+                    onboarding.ShowWaitingOverlay();
                 }
 
+                if (!isScanTimerStarted)
+                {
+                    // start the timer when not yet started
+                    isScanTimerStarted = true;
+                    StartCoroutine("IncreaseScanTimer");
+                }
+
+                if (scanTimePast < SCAN_TIME_DEFAULT)
+                {
+                    // add all found images to array list
+                    foreach (var image in recognisedImages)
+                    {
+                        tempFoundPosterImage.Add(image);
+                    }
+                }
+                else if (scanTimePast >= SCAN_TIME_DEFAULT)
+                {
+                    StopCoroutine("IncreaseScanTimer");
+                    scanTimePast = 0;
+                    calculateNewPosterPosition();
+                }
             }
         }
         //this.LogAnchorDrift();
 
-        // set poster always to anchor, because anchor can drifft, but can also be corrected by arcore device
         if (anchor != null)
         {
             scene.poster.transform.position = this.anchor.transform.position;
-            //scene.poster.transform.rotation = this.anchor.transform.rotation;
+            scene.poster.transform.rotation = this.anchor.transform.rotation;
         }
+    }
+
+    private void calculateNewPosterPosition()
+    {
+        float totalPosX = 0, totalPosY = 0, totalPosZ = 0;
+        float totalRotX = 0, totalRotY = 0, totalRotZ = 0, totalRotW = 0;
+
+        foreach (var image in recognisedImages)
+        {
+            Vector3 position = image.CenterPose.position;
+            totalPosX += position.x;
+            totalPosY += position.y;
+            totalPosZ += position.z;
+
+            Quaternion rotation = image.CenterPose.rotation;
+            totalRotX += rotation.x;
+            totalRotY += rotation.y;
+            totalRotZ += rotation.z;
+            totalRotW += rotation.w;
+        }
+
+        // calculate new position and rotation
+        int imageCount = recognisedImages.Count;
+        Vector3 newPosition = new Vector3(totalPosX / imageCount, totalPosY / imageCount, totalPosZ / imageCount);
+        Quaternion newRotation = new Quaternion(totalRotX /imageCount, totalRotY/imageCount, totalRotZ/imageCount, totalRotW/imageCount);
+
+        scene.poster.transform.position = newPosition;
+        scene.poster.transform.rotation = newRotation;
+
+        // rotates the poster because scanned image rotation is flat
+        this.scene.poster.transform.Rotate(90, 0, 0);
+
+        // rotates poster with world because we see the backside of it
+        // IMPORTANT: you have to adjust this when moving poster to other place
+        this.scene.poster.transform.Rotate(0, 180, 0);
+
+        // create new anchor with new position and rotation
+        Pose pose = new Pose(scene.poster.transform.position, this.scene.poster.transform.rotation);
+        this.anchor = Session.CreateAnchor(pose);
+
+        // rest temp poster list;
+        tempFoundPosterImage = new List<AugmentedImage>();
     }
 
     // Set anchor to center of scanned image.
