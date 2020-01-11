@@ -6,10 +6,10 @@ using GoogleARCore;
 public class AnchorController : MonoBehaviour
 {
     // temporarily stored pictures to find poster
-    private List<AugmentedImage> recognisedImages = new List<AugmentedImage>();
+    private List<AugmentedImage> recognisedImagesPerFrame;
 
     // holds anchor of scanned poster
-    private Anchor anchor;
+    private Anchor anchor = null;
 
     // holds last stored position and rotation of anchor
     private Vector3 lastAnchoredPosition;
@@ -30,18 +30,18 @@ public class AnchorController : MonoBehaviour
     // true when scan timer was started
     private bool isScanTimerStarted = false;
 
-    // holds scanned images
-    private AugmentedImage scannedImage;
-
     // true when poster is scanned first time, need to know for next scans that it doesn't show hold still
     private bool isPosterScannedFirstTime = true;
 
     // holds scanned images that are used to calculate new position
     private List<AugmentedImage> tempFoundPosterImage;
 
+    private string LOG_ID = "AMI";
+
     private void Start()
     {
         tempFoundPosterImage = new List<AugmentedImage>();
+        recognisedImagesPerFrame = new List<AugmentedImage>();
     }
 
     // Update is called once per frame
@@ -51,10 +51,11 @@ public class AnchorController : MonoBehaviour
         {
             // get image part that contain scanned poster
             Session.GetTrackables<AugmentedImage>(
-                recognisedImages, TrackableQueryFilter.Updated);
+                recognisedImagesPerFrame, TrackableQueryFilter.Updated);
 
-            if (recognisedImages.Count > 0)
+            if (recognisedImagesPerFrame.Count > 0)
             {
+                Debug.Log(LOG_ID + " Poster was scanned!");
                 // the poster was scanned!
 
                 if (isPosterScannedFirstTime)
@@ -74,26 +75,27 @@ public class AnchorController : MonoBehaviour
                 if (scanTimePast < SCAN_TIME_DEFAULT)
                 {
                     // add all found images to array list
-                    foreach (var image in recognisedImages)
+                    foreach (var image in recognisedImagesPerFrame)
                     {
                         tempFoundPosterImage.Add(image);
                     }
                 }
-                else if (scanTimePast >= SCAN_TIME_DEFAULT)
-                {
-                    StopCoroutine("IncreaseScanTimer");
-                    scanTimePast = 0;
-                    calculateNewPosterPosition();
-                }
             }
         }
-        //this.LogAnchorDrift();
+
+        if (scanTimePast >= SCAN_TIME_DEFAULT)
+        {
+            StopCoroutine("IncreaseScanTimer");
+            scanTimePast = 0;
+            calculateNewPosterPosition();
+        }
 
         if (anchor != null)
         {
             scene.poster.transform.position = this.anchor.transform.position;
             scene.poster.transform.rotation = this.anchor.transform.rotation;
         }
+        //this.LogAnchorDrift();
     }
 
     private void calculateNewPosterPosition()
@@ -101,7 +103,7 @@ public class AnchorController : MonoBehaviour
         float totalPosX = 0, totalPosY = 0, totalPosZ = 0;
         float totalRotX = 0, totalRotY = 0, totalRotZ = 0, totalRotW = 0;
 
-        foreach (var image in recognisedImages)
+        foreach (var image in recognisedImagesPerFrame)
         {
             Vector3 position = image.CenterPose.position;
             totalPosX += position.x;
@@ -116,7 +118,7 @@ public class AnchorController : MonoBehaviour
         }
 
         // calculate new position and rotation
-        int imageCount = recognisedImages.Count;
+        int imageCount = recognisedImagesPerFrame.Count;
         Vector3 newPosition = new Vector3(totalPosX / imageCount, totalPosY / imageCount, totalPosZ / imageCount);
         Quaternion newRotation = new Quaternion(totalRotX /imageCount, totalRotY/imageCount, totalRotZ/imageCount, totalRotW/imageCount);
 
@@ -142,7 +144,7 @@ public class AnchorController : MonoBehaviour
     public void SetAnchor()
     {
         // create anchor where image was scanned
-        this.anchor = scannedImage.CreateAnchor(scannedImage.CenterPose);
+        //this.anchor = scannedImage.CreateAnchor(scannedImage.CenterPose);
 
         // keep the last position and rotation
         this.lastAnchoredPosition = anchor.transform.position;
@@ -152,6 +154,7 @@ public class AnchorController : MonoBehaviour
     // Position AMIs world according to poster.
     private void syncTheWorld()
     {
+        /*
         scene.poster.transform.position = scannedImage.CenterPose.position;
 
         // we rotate AMIs world with 90 degrees "backwards", so it is flat at the wall
@@ -166,7 +169,7 @@ public class AnchorController : MonoBehaviour
         // IMPORTANT: you have to adjust this when moving poster to other place
         this.scene.poster.transform.Rotate(0, 180, 0);
 
-        this.scene.EnableAMIsWorld();
+        this.scene.EnableAMIsWorld();*/
     }
 
     // Log how much the anchor driffted from starting position.
