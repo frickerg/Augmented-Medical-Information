@@ -36,8 +36,6 @@ public class AnchorController : MonoBehaviour
     // holds scanned images that are used to calculate new position
     private List<AugmentedImage> tempFoundPosterImage;
 
-    private string LOG_ID = "AMI";
-
     private void Start()
     {
         tempFoundPosterImage = new List<AugmentedImage>();
@@ -49,13 +47,12 @@ public class AnchorController : MonoBehaviour
     {
         if (Session.Status == SessionStatus.Tracking)
         {
-            // get trackable images
+            // Get updated augmented images for this frame.
             Session.GetTrackables<AugmentedImage>(
                 trackableImages, TrackableQueryFilter.Updated);
 
             if (trackableImages.Count > 0)
             {
-                Debug.Log(LOG_ID + " Poster was scanned!");
                 // the poster was scanned!
 
                 if (isPosterScannedFirstTime)
@@ -77,7 +74,10 @@ public class AnchorController : MonoBehaviour
                     // add all found images to array list
                     foreach (var image in trackableImages)
                     {
-                        tempFoundPosterImage.Add(image);
+                        if (image.TrackingState == TrackingState.Tracking)
+                        {
+                            tempFoundPosterImage.Add(image);
+                        }
                     }
                 }
             }
