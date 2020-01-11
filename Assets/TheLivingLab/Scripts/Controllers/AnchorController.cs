@@ -88,7 +88,10 @@ public class AnchorController : MonoBehaviour
             StopCoroutine("IncreaseScanTimer");
             isScanTimerStarted = false;
             scanTimePast = 0;
-            calculateNewPosterPosition();
+            if (tempFoundPosterImage.Count > 0)
+            {
+                calculateNewPosterPosition();
+            } 
         }
 
         //this.LogAnchorDrift();
