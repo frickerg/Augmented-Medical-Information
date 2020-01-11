@@ -146,40 +146,7 @@ public class AnchorController : MonoBehaviour
         tempFoundPosterImage = new List<AugmentedImage>();
     }
 
-    // Set anchor to center of scanned image.
-    public void SetAnchor()
-    {
-        // create anchor where image was scanned
-        //this.anchor = scannedImage.CreateAnchor(scannedImage.CenterPose);
-
-        // keep the last position and rotation
-        this.lastAnchoredPosition = anchor.transform.position;
-        this.lastAnchoredRotation = anchor.transform.rotation;
-    }
-
-    // Position AMIs world according to poster.
-    private void syncTheWorld()
-    {
-        /*
-        scene.poster.transform.position = scannedImage.CenterPose.position;
-
-        // we rotate AMIs world with 90 degrees "backwards", so it is flat at the wall
-        // side rotation we don't rotate so the poster has always same rotation
-        Quaternion imageRotation = scannedImage.CenterPose.rotation;
-        this.scene.poster.transform.rotation = imageRotation;
-
-        // rotates the poster because scanned image rotation is flat
-        this.scene.poster.transform.Rotate(90, 0, 0);
-
-        // rotates poster with world because we see the backside of it
-        // IMPORTANT: you have to adjust this when moving poster to other place
-        this.scene.poster.transform.Rotate(0, 180, 0);
-
-        this.scene.EnableAMIsWorld();*/
-    }
-
     // Log how much the anchor driffted from starting position.
-    // TODO we could adjust poster to correct drift!
     public void LogAnchorDrift()
     {
         if (anchor == null)
