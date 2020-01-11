@@ -35,7 +35,6 @@ public class SceneController : MonoBehaviour
     // synchronization with real world.
     public void EnableAMIsWorld()
     {
-        // TODO show something else than just poster to show that scanned successful
         this.poster.SetActive(true);
     }
 

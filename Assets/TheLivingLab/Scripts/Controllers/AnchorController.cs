@@ -22,7 +22,7 @@ public class AnchorController : MonoBehaviour
     public SceneController scene;
 
     // default scan time for poster
-    private float SCAN_TIME_DEFAULT = 4f;
+    private float SCAN_TIME_DEFAULT = 5f;
 
     // amount of seconds scanned poster
     private int scanTimePast = 0;
@@ -86,6 +86,7 @@ public class AnchorController : MonoBehaviour
         if (scanTimePast >= SCAN_TIME_DEFAULT)
         {
             StopCoroutine("IncreaseScanTimer");
+            isScanTimerStarted = false;
             scanTimePast = 0;
             calculateNewPosterPosition();
         }
@@ -103,7 +104,7 @@ public class AnchorController : MonoBehaviour
         float totalPosX = 0, totalPosY = 0, totalPosZ = 0;
         float totalRotX = 0, totalRotY = 0, totalRotZ = 0, totalRotW = 0;
 
-        foreach (var image in recognisedImagesPerFrame)
+        foreach (var image in tempFoundPosterImage)
         {
             Vector3 position = image.CenterPose.position;
             totalPosX += position.x;
@@ -118,7 +119,7 @@ public class AnchorController : MonoBehaviour
         }
 
         // calculate new position and rotation
-        int imageCount = recognisedImagesPerFrame.Count;
+        int imageCount = tempFoundPosterImage.Count;
         Vector3 newPosition = new Vector3(totalPosX / imageCount, totalPosY / imageCount, totalPosZ / imageCount);
         Quaternion newRotation = new Quaternion(totalRotX /imageCount, totalRotY/imageCount, totalRotZ/imageCount, totalRotW/imageCount);
 
@@ -126,15 +127,21 @@ public class AnchorController : MonoBehaviour
         scene.poster.transform.rotation = newRotation;
 
         // rotates the poster because scanned image rotation is flat
-        this.scene.poster.transform.Rotate(90, 0, 0);
+        scene.poster.transform.Rotate(90, 0, 0);
 
         // rotates poster with world because we see the backside of it
         // IMPORTANT: you have to adjust this when moving poster to other place
-        this.scene.poster.transform.Rotate(0, 180, 0);
+        scene.poster.transform.Rotate(0, 180, 0);
 
         // create new anchor with new position and rotation
         Pose pose = new Pose(scene.poster.transform.position, this.scene.poster.transform.rotation);
-        this.anchor = Session.CreateAnchor(pose);
+        anchor = Session.CreateAnchor(pose);
+
+        // hide wait overlay
+        onboarding.DisableScanWaitOverlay();
+
+        // show poster and AMIs world
+        scene.EnableAMIsWorld();
 
         // rest temp poster list;
         tempFoundPosterImage = new List<AugmentedImage>();
