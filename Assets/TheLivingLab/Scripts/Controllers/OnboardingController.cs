@@ -82,6 +82,13 @@ public class OnboardingController : MonoBehaviour
         FitToScanWaitOverlay.SetActive(true);
     }
 
+    // Shows scan poster message
+    public void ShowScanOverlay()
+    {
+        DisableScanWaitOverlay();
+        FitToScanOverlay.SetActive(true);
+    }
+
     // Hides hold still scan overlay.
     public void DisableScanWaitOverlay()
     {
@@ -100,7 +107,7 @@ public class OnboardingController : MonoBehaviour
     // Tells Anchor controller to look for poster.
     private void StartPosterScan()
     {
-        FitToScanOverlay.SetActive(true);
+        ShowScanOverlay();
         anchorController.gameObject.SetActive(true);
     }
 

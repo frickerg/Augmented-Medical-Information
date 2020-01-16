@@ -45,16 +45,16 @@ public class AnchorController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Session.Status == SessionStatus.Tracking)
+        if (Session.Status == SessionStatus.Tracking && anchor == null)
         {
+            // only check for images when no anchor and when tracking
+
             // Get updated augmented images for this frame.
             Session.GetTrackables<AugmentedImage>(
                 trackableImages, TrackableQueryFilter.Updated);
 
             if (trackableImages.Count > 0)
             {
-                // the poster was scanned!
-
                 if (isPosterScannedFirstTime)
                 {
                     // only show waiting at first scan
@@ -81,19 +81,23 @@ public class AnchorController : MonoBehaviour
                     }
                 }
             }
-        }
 
-        if (scanTimePast >= SCAN_TIME_DEFAULT)
-        {
-            StopCoroutine("IncreaseScanTimer");
-            isScanTimerStarted = false;
-            scanTimePast = 0;
-            if (tempFoundPosterImage.Count > 0)
+            if (scanTimePast >= SCAN_TIME_DEFAULT)
             {
-                calculateNewPosterPosition();
-            } 
+                StopCoroutine("IncreaseScanTimer");
+                isScanTimerStarted = false;
+                scanTimePast = 0;
+                if (tempFoundPosterImage.Count > 0)
+                {
+                    calculateNewPosterPosition();
+                }
+            }
+        } else if (Session.Status != SessionStatus.Tracking)
+        {
+            // reset anchor to null and tell user to scan poster again
+            this.anchor = null;
+            this.onboarding.ShowScanOverlay();
         }
-
         //this.LogAnchorDrift();
     }
 
