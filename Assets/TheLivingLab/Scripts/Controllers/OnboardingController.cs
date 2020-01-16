@@ -18,9 +18,6 @@ public class OnboardingController : MonoBehaviour
     // is shown at start and is removed as soon as user granted permission
     public GameObject NoPermissionOverlay;
 
-    // access to methods of AnchorController
-    public AnchorController anchor;
-
     // true when user granted camera permission, stops checking for camera permission
     private bool isCameraPermissionGranted = false;
 
@@ -36,8 +33,17 @@ public class OnboardingController : MonoBehaviour
     // holds Google ARCore camera to activate when scanning
     public GameObject ARCoreCamera;
 
-    // holds camera active on startup
+    // holds camera active on app start
     public GameObject StartingCamera;
+
+    // holds anchor controller to activate it when it's time
+    public AnchorController anchorController;
+
+    private void Awake()
+    {
+        // deactivate anchor controller because only needed after onboarding
+        anchorController.gameObject.SetActive(false);
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -76,6 +82,13 @@ public class OnboardingController : MonoBehaviour
         FitToScanWaitOverlay.SetActive(true);
     }
 
+    // Shows scan poster message
+    public void ShowScanOverlay()
+    {
+        DisableScanWaitOverlay();
+        FitToScanOverlay.SetActive(true);
+    }
+
     // Hides hold still scan overlay.
     public void DisableScanWaitOverlay()
     {
@@ -94,8 +107,8 @@ public class OnboardingController : MonoBehaviour
     // Tells Anchor controller to look for poster.
     private void StartPosterScan()
     {
-        FitToScanOverlay.SetActive(true);
-        this.anchor.LookForPoster();
+        ShowScanOverlay();
+        anchorController.gameObject.SetActive(true);
     }
 
     // Hides the scan overlay.
