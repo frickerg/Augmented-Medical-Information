@@ -94,9 +94,16 @@ public class AnchorController : MonoBehaviour
             }
         } else if (Session.Status != SessionStatus.Tracking)
         {
-            // reset anchor to null and tell user to scan poster again
+            /*
+            //TODO need to fix this, currently if (trackableImages.Count > 0) is also bigger 0, when poster is not in sight, but probably not in trackng mode...
+            // reset anchor and poster to null and tell user to scan poster again
+            scene.SetVisibilityOfAMIsWorld(false);
             this.anchor = null;
+            scene.poster.transform.position = new Vector3(0,0,0);
+            scene.poster.transform.rotation = new Quaternion(0, 0, 0, 0);
             this.onboarding.ShowScanOverlay();
+            isPosterScannedFirstTime = true;
+            isScanTimerStarted = false;*/
         }
         //this.LogAnchorDrift();
     }
@@ -144,7 +151,7 @@ public class AnchorController : MonoBehaviour
         onboarding.DisableScanWaitOverlay();
 
         // show poster and AMIs world
-        scene.EnableAMIsWorld();
+        scene.SetVisibilityOfAMIsWorld(true);
 
         // rest temp poster list;
         tempFoundPosterImage = new List<AugmentedImage>();

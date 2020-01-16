@@ -33,9 +33,9 @@ public class SceneController : MonoBehaviour
     // shows the objects of AMIs world
     // Should be called after successfully onboarding and
     // synchronization with real world.
-    public void EnableAMIsWorld()
+    public void SetVisibilityOfAMIsWorld(bool isVisible)
     {
-        this.poster.SetActive(true);
+        this.poster.SetActive(isVisible);
     }
 
     // Hide all objects from scene.
