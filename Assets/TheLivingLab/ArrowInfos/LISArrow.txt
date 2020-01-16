@@ -1,0 +1,9 @@
+Will eine Ärztin/ ein Arzt eine Laboruntersuchung z.B. des Harns in Auftrag geben, so wird diese im KAS durchgeführt. Über eine Eingabemaske werden die zu messenden Parameter sowie die PatientInnen-Identifikationsdaten eingetragen und dann als elektronische Nachricht an das hausinterne Labor geschickt. Eine typische Übertragungform ist eine sogenannte «ORM» Nachricht (Order Entry) des HL7-v2-Nachrichten-Standards.
+
+MSH|^~\&|KAS|KlinikHöheweg|LIS|KlinikHöheweg|20060307110114||ORM^O01|MSGID20060307110114|P|2.3
+
+PID|||12001||Broennimann^Elisabeth^^^Ms.||19670824|F
+
+ORC|NW|20060307110114
+
+OBR|1|20060307110114||003038^Urinalysis^L|||20060307110114

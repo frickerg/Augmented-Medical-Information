@@ -1,0 +1,107 @@
+image: gableroux/unity3d:2019.2.17f1
+
+stages:
+  - setup
+  - build
+  - deploy
+
+# If you are looking for a place where to add 'UNITY_LICENSE_FILE' nad secrets, please visit your project's gitlab page:
+# settings > CI/CD > Variables instead
+# CAUTION: when updating to new unity editor version you need to update licsense in gitlab ci variables
+variables:
+  # Define commit message for new APKs
+  # APK_COMMIT_MESSAGE: "Uploaded new APK for commit"
+  APK_COMMIT_MESSAGE: "Uploaded new APK for commit"
+
+  # ssh_deploy_key is defined under Settings > CI/CD Pipelines > Secret Variables.
+  GIT_SSH_COMMAND: "ssh -o StrictHostKeyChecking=no -i .ssh/id_rsa-gitlab-ci"
+
+  # Clone rather than fetch so we have a completely clean workspace without
+  # any previous RELEASE_BRANCH left over from past CI runs.
+  GIT_STRATEGY: clone
+
+  # Unity settings
+  BUILD_NAME: AMI
+  UNITY_ACTIVATION_FILE: ./unity3d.alf
+
+.unity_before_script: &unity_before_script
+  before_script:
+    # check commit
+    - COMMIT_MESSAGE="$(git log -1 --pretty=%B)"
+    - if [ "${COMMIT_MESSAGE::${#APK_COMMIT_MESSAGE}}" == "${APK_COMMIT_MESSAGE}" ];then exit;fi
+    # execute unity script
+    - chmod +x ./ci/before_script.sh && ./ci/before_script.sh
+
+.cache: &cache
+  cache:
+    key: "$CI_PROJECT_NAMESPACE-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG-$TEST_PLATFORM"
+    paths:
+      - Library/
+
+# run this job when you need to request a license
+# you may need to follow activation steps from documentation
+get-activation-file:
+  when: manual
+  stage: build
+  script:
+    - chmod +x ./ci/get_activation_file.sh && ./ci/get_activation_file.sh
+  artifacts:
+    paths:
+      - $UNITY_ACTIVATION_FILE
+    expire_in: 10 min # Expiring this as artifacts may contain sensitive data and should not be kept public
+  only:
+    - develop
+    - master
+
+.build: &build
+  stage: build
+  <<: *unity_before_script
+  <<: *cache
+  script:
+    - chmod +x ./ci/build.sh && ./ci/build.sh
+  artifacts:
+    paths:
+      - ./Release
+  only:
+    - develop
+    - master
+
+build-android:
+  <<: *build
+  image: gableroux/unity3d:2019.2.17f1-android
+  variables:
+    BUILD_TARGET: Android
+
+upload-apk:
+  stage: deploy
+  before_script:
+    # update ssh
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )'
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+    # setting up git config on HEAD
+    - git config --global user.email $(git --no-pager show -s --format='%ae' HEAD)
+    - git config --global user.name $(git --no-pager show -s --format='%an' HEAD)
+    # setting up local rsa-ssh
+    - mkdir -pvm 0700 .ssh
+    - echo "$ssh_deploy_key" > .ssh/id_rsa-gitlab-ci
+    - chmod 0400 .ssh/id_rsa-gitlab-ci
+    # preparing repo to push back on self
+    - git checkout -b "$CI_BUILD_REF_NAME"
+    - git remote set-url --push origin $(perl -pe 's#.*@(.+?(\:\d+)?)/#git@\1:#' <<< $CI_REPOSITORY_URL)
+  script:
+    # check commit
+    - COMMIT_MESSAGE="$(git log -1 --pretty=%B)"
+    - if [ "${COMMIT_MESSAGE::${#APK_COMMIT_MESSAGE}}" == "${APK_COMMIT_MESSAGE}" ];then exit;fi
+    # commit new APK
+    - git status
+    - git add Release/AMI.apk
+    - git commit -m "${APK_COMMIT_MESSAGE} ${CI_COMMIT_SHA::8}"
+    - git push origin "$CI_BUILD_REF_NAME:$CI_COMMIT_REF_NAME"
+  only:
+    - develop
+    - master
+  after_script:
+    - ls
+    # cleanup local ssh
+    - rm -Rfv .ssh
